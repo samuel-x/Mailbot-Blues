@@ -49,17 +49,21 @@ public class MailGenerator {
      */
     private MailItem generateMail(){
         int dest_floor = generateDestinationFloor();
+        // Cannot move this line down into the below 'else' block, which would result in only generating priority levels
+        // when a priority mail item has been generated. This is because it would result in fewer generation of priority
+        // levels, affecting the random number generator, changing final output of the program, which is not allowed.
         int priority_level = generatePriorityLevel();
         int arrival_time = generateArrivalTime();
         int weight = generateWeight();
         // Check if arrival time has a priority mail
         if(	(random.nextInt(6) > 0) ||  // Skew towards non priority mail
         	(allMail.containsKey(arrival_time) &&
-        	allMail.get(arrival_time).stream().anyMatch(e -> PriorityMailItem.class.isInstance(e))))
+        	allMail.get(arrival_time).stream().anyMatch(MailItem::hasPriority)))
         {
-        	return new MailItem(dest_floor,arrival_time,weight);      	
+        	return new MailItem(dest_floor, arrival_time, weight, 0);
+
         } else {
-        	return new PriorityMailItem(dest_floor,arrival_time,weight,priority_level);
+        	return new MailItem(dest_floor, arrival_time, weight, priority_level);
         }   
     }
 
@@ -120,7 +124,7 @@ public class MailGenerator {
                 /** If the key doesn't exist then set a new key along with the array of MailItems to add during
                  * that time step.
                  */
-                ArrayList<MailItem> newMailList = new ArrayList<MailItem>();
+                ArrayList<MailItem> newMailList = new ArrayList<>();
                 newMailList.add(newMail);
                 allMail.put(timeToDeliver,newMailList);
             }
@@ -139,12 +143,14 @@ public class MailGenerator {
      * While there are steps left, create a new mail item to deliver
      * @return Priority
      */
-    public PriorityMailItem step(){
-    	PriorityMailItem priority = null;
+    public MailItem step(){
+    	MailItem priority = null;
     	// Check if there are any mail to create
-        if(this.allMail.containsKey(Clock.Time())){
-            for(MailItem mailItem : allMail.get(Clock.Time())){
-            	if (mailItem instanceof PriorityMailItem) priority = ((PriorityMailItem) mailItem);
+        if (this.allMail.containsKey(Clock.Time())){
+            for (MailItem mailItem : allMail.get(Clock.Time())){
+            	if (mailItem.hasPriority()) {
+            	    priority = mailItem;
+                }
                 System.out.printf("T: %3d > new addToPool [%s]%n", Clock.Time(), mailItem.toString());
                 mailPool.addToPool(mailItem);
             }

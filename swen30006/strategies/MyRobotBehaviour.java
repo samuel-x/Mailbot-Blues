@@ -1,7 +1,6 @@
 package strategies;
-import automail.Clock;
+
 import automail.MailItem;
-import automail.PriorityMailItem;
 import automail.StorageTube;
 
 public class MyRobotBehaviour implements IRobotBehaviour {
@@ -25,7 +24,7 @@ public class MyRobotBehaviour implements IRobotBehaviour {
  
 	private int tubePriority(StorageTube tube) {  // Assumes at least one item in tube
 		MailItem item = tube.peek();
-		return (item instanceof PriorityMailItem) ? ((PriorityMailItem) item).getPriorityLevel() : 0;
+		return item.getPriorityLevel();
 	}
 	
 	@Override

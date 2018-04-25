@@ -8,30 +8,33 @@ package automail;
 public class MailItem {
 	
     /** Represents the destination floor to which the mail is intended to go */
-    protected final int destination_floor;
+    private final int destinationFloor;
     /** The mail identifier */
-    protected final String id;
+    private final String id;
     /** The time the mail item arrived */
-    protected final int arrival_time;
+    private final int arrivalTime;
     /** The weight in grams of the mail item */
-    protected final int weight;
+    private final int weight;
+    /** The priority level of the mail item */
+    private final int priorityLevel;
 
     /**
      * Constructor for a MailItem
-     * @param dest_floor the destination floor intended for this mail item
-     * @param arrival_time the time that the mail arrived
+     * @param destinationFloor the destination floor intended for this mail item
+     * @param arrivalTime the time that the mail arrived
      * @param weight the weight of this mail item
      */
-    public MailItem(int dest_floor, int arrival_time, int weight){
-        this.destination_floor = dest_floor;
+    public MailItem(int destinationFloor, int arrivalTime, int weight, int priorityLevel){
+        this.destinationFloor = destinationFloor;
         this.id = String.valueOf(hashCode());
-        this.arrival_time = arrival_time;
+        this.arrivalTime = arrivalTime;
         this.weight = weight;
+        this.priorityLevel = priorityLevel;
     }
 
     @Override
     public String toString(){
-        return String.format("Mail Item:: ID: %11s | Arrival: %4d | Destination: %2d | Weight: %4d", id, arrival_time, destination_floor, weight );
+        return String.format("Mail Item:: ID: %11s | Arrival: %4d | Destination: %2d | Weight: %4d", id, arrivalTime, destinationFloor, weight );
     }
 
     /**
@@ -39,7 +42,7 @@ public class MailItem {
      * @return the destination floor of the mail item
      */
     public int getDestFloor() {
-        return destination_floor;
+        return destinationFloor;
     }
     
     /**
@@ -55,14 +58,22 @@ public class MailItem {
      * @return the arrival time of the mail item
      */
     public int getArrivalTime(){
-        return arrival_time;
+        return arrivalTime;
     }
 
     /**
     *
     * @return the weight of the mail item
     */
-   public int getWeight(){
-       return weight;
-   }
+    public int getWeight(){
+        return weight;
+    }
+
+    public int getPriorityLevel() {
+        return priorityLevel;
+    }
+
+    public boolean hasPriority() {
+        return this.getPriorityLevel() > 0;
+    }
 }

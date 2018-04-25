@@ -60,13 +60,13 @@ public class Simulation {
         
         /** Initiate all the mail */
         generator.generateAllMail();
-        PriorityMailItem priority;
+        MailItem priority;
         while(MAIL_DELIVERED.size() != generator.MAIL_TO_CREATE) {
         	//System.out.println("-- Step: "+Clock.Time());
             priority = generator.step();
             if (priority != null) {
-            	automail.robot1.behaviour.priorityArrival(priority.getPriorityLevel(), priority.weight);
-            	automail.robot2.behaviour.priorityArrival(priority.getPriorityLevel(), priority.weight);
+            	automail.robot1.behaviour.priorityArrival(priority.getPriorityLevel(), priority.getWeight());
+            	automail.robot2.behaviour.priorityArrival(priority.getPriorityLevel(), priority.getWeight());
             }
             try {
 				automail.robot1.step();
@@ -105,11 +105,8 @@ public class Simulation {
     private static double calculateDeliveryScore(MailItem deliveryItem) {
     	// Penalty for longer delivery times
     	final double penalty = 1.1;
-    	double priority_weight = 0;
+    	double priority_weight = deliveryItem.getPriorityLevel();
         // Take (delivery time - arrivalTime)**penalty * (1+sqrt(priority_weight))
-    	if(deliveryItem instanceof PriorityMailItem){
-    		priority_weight = ((PriorityMailItem) deliveryItem).getPriorityLevel();
-    	}
         return Math.pow(Clock.Time() - deliveryItem.getArrivalTime(),penalty)*(1+Math.sqrt(priority_weight));
     }
 
