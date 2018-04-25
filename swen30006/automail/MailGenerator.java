@@ -11,16 +11,14 @@ import strategies.IMailPool;
 public class MailGenerator {
 
     public final int MAIL_TO_CREATE;
-
-    private int mailCreated;
+    public final int LAST_DELIVERY_TIME;
 
     private final Random random;
-    /** This seed is used to make the behaviour deterministic */
-    
+
+    private int mailCreated;
     private boolean complete;
     private IMailPool mailPool;
-
-    private HashMap<Integer,ArrayList<MailItem>> allMail;
+    private HashMap<Integer, ArrayList<MailItem>> allMail = new HashMap<>();
 
     /**
      * Constructor for mail generation
@@ -28,7 +26,7 @@ public class MailGenerator {
      * @param mailPool where mail items go on arrival
      * @param seed random seed for generating mail
      */
-    public MailGenerator(int mailToCreate, IMailPool mailPool, HashMap<Boolean,Integer> seed){
+    public MailGenerator(int mailToCreate, int lastDeliveryTime, IMailPool mailPool, HashMap<Boolean,Integer> seed){
         if(seed.containsKey(true)){
         	this.random = new Random((long) seed.get(true));
         }
@@ -36,11 +34,11 @@ public class MailGenerator {
         	this.random = new Random();	
         }
         // Vary arriving mail by +/-20%
-        MAIL_TO_CREATE = mailToCreate*4/5 + random.nextInt(mailToCreate*2/5);
-        // System.out.println("Num Mail Items: "+MAIL_TO_CREATE);
-        mailCreated = 0;
-        complete = false;
-        allMail = new HashMap<Integer,ArrayList<MailItem>>();
+        this.MAIL_TO_CREATE = mailToCreate*4/5 + random.nextInt(mailToCreate * 2/5);
+        this.LAST_DELIVERY_TIME = lastDeliveryTime;
+
+        this.mailCreated = 0;
+        this.complete = false;
         this.mailPool = mailPool;
     }
 
@@ -93,7 +91,7 @@ public class MailGenerator {
      * @return a random arrival time before the last delivery time
      */
     private int generateArrivalTime(){
-        return 1 + random.nextInt(Clock.LAST_DELIVERY_TIME);
+        return 1 + random.nextInt(this.LAST_DELIVERY_TIME);
     }
 
     /**

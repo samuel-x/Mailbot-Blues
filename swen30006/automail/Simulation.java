@@ -5,11 +5,8 @@ import exceptions.ItemTooHeavyException;
 import exceptions.MailAlreadyDeliveredException;
 import strategies.Automail;
 
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Properties;
 
 /**
  * This class simulates the behaviour of AutoMail
@@ -18,10 +15,9 @@ public class Simulation {
 
     /** Constant for the mail generator */
     private static final int MAIL_TO_CREATE = 180;
-    
 
-    private static ArrayList<MailItem> MAIL_DELIVERED;
-    private static double total_score = 0;
+    private static ArrayList<MailItem> mailDelivered;
+    private static double totalScore = 0;
 
     public static void main(String[] args) { //throws IOException {
  /*   	// Should probably be using properties here
@@ -43,7 +39,7 @@ public class Simulation {
 		int i = Integer.parseInt(automailProperties.getProperty("Name_of_Property"));
 */
 
-        MAIL_DELIVERED = new ArrayList<MailItem>();
+        mailDelivered = new ArrayList<MailItem>();
                 
         /** Used to see whether a seed is initialized or not */
         HashMap<Boolean, Integer> seedMap = new HashMap<>();
@@ -56,12 +52,13 @@ public class Simulation {
         	seedMap.put(false, 0);
         }
         Automail automail = new Automail(new ReportDelivery());
-        MailGenerator generator = new MailGenerator(MAIL_TO_CREATE, automail.mailPool, seedMap);
+        // TODO: Replace the 300 (should be replaced with Properties.get____() that Sam is working on).
+        MailGenerator generator = new MailGenerator(MAIL_TO_CREATE, 300, automail.mailPool, seedMap);
         
         /** Initiate all the mail */
         generator.generateAllMail();
         PriorityMailItem priority;
-        while(MAIL_DELIVERED.size() != generator.MAIL_TO_CREATE) {
+        while(mailDelivered.size() != generator.MAIL_TO_CREATE) {
         	//System.out.println("-- Step: "+Clock.Time());
             priority = generator.step();
             if (priority != null) {
@@ -85,11 +82,11 @@ public class Simulation {
     	
     	/** Confirm the delivery and calculate the total score */
     	public void deliver(MailItem deliveryItem){
-    		if(!MAIL_DELIVERED.contains(deliveryItem)){
+    		if(!mailDelivered.contains(deliveryItem)){
                 System.out.printf("T: %3d > Delivered     [%s]%n", Clock.Time(), deliveryItem.toString());
-    			MAIL_DELIVERED.add(deliveryItem);
+    			mailDelivered.add(deliveryItem);
     			// Calculate delivery score
-    			total_score += calculateDeliveryScore(deliveryItem);
+    			totalScore += calculateDeliveryScore(deliveryItem);
     		}
     		else{
     			try {
@@ -116,6 +113,6 @@ public class Simulation {
     public static void printResults(){
         System.out.println("T: "+Clock.Time()+" | Simulation complete!");
         System.out.println("Final Delivery time: "+Clock.Time());
-        System.out.printf("Final Score: %.2f%n", total_score);
+        System.out.printf("Final Score: %.2f%n", totalScore);
     }
 }
