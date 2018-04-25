@@ -1,6 +1,5 @@
 package strategies;
 
-import automail.IMailDelivery;
 import automail.Robot;
 
 public class Automail {
@@ -8,7 +7,7 @@ public class Automail {
     public Robot robot1, robot2;
     public IMailPool mailPool;
     
-    public Automail(IMailDelivery delivery) {
+    public Automail() {
     	// Swap between simple provided strategies and your strategies here
     	    	
     	/** Initialize the MailPool */
@@ -25,8 +24,8 @@ public class Automail {
     	IRobotBehaviour robotBehaviourS = new MyRobotBehaviour(strong);
     	    	
     	/** Initialize robot */
-    	robot1 = new Robot(robotBehaviourW, delivery, mailPool, weak); /* shared behaviour because identical and stateless */
-    	robot2 = new Robot(robotBehaviourS, delivery, mailPool, strong);
+    	robot1 = new Robot(robotBehaviourW, mailPool, weak); /* shared behaviour because identical and stateless */
+    	robot2 = new Robot(robotBehaviourS, mailPool, strong);
     }
     
 }
