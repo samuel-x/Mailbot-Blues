@@ -10,7 +10,7 @@ import strategies.IRobotBehaviour;
  */
 public class Robot {
 
-	StorageTube tube;
+	Storage storage;
     IRobotBehaviour behaviour;
     IMailDelivery delivery;
     protected final String id;
@@ -40,7 +40,7 @@ public class Robot {
         // current_state = RobotState.WAITING;
     	current_state = RobotState.RETURNING;
         current_floor = Building.MAILROOM_LOCATION;
-        tube = new StorageTube();
+        storage = new StorageTube();
         this.behaviour = behaviour;
         this.delivery = delivery;
         this.mailPool = mailPool;
@@ -58,8 +58,8 @@ public class Robot {
     		case RETURNING:
     			/** If its current position is at the mailroom, then the robot should change state */
                 if(current_floor == Building.MAILROOM_LOCATION){
-                	while(!tube.isEmpty()) {
-                		MailItem mailItem = tube.pop();
+                	while(!storage.isEmpty()) {
+                		MailItem mailItem = storage.takeItem();
                 		mailPool.addToPool(mailItem);
                         System.out.printf("T: %3d > old addToPool [%s]%n", Clock.Time(), mailItem.toString());
                 	}
@@ -71,10 +71,10 @@ public class Robot {
                 }
     		case WAITING:
     			/** Tell the sorter the robot is ready */
-    			mailPool.fillStorageTube(tube, strong);
+    			mailPool.fillStorageTube((StorageTube) storage, strong);
                 // System.out.println("Tube total size: "+tube.getTotalOfSizes());
                 /** If the StorageTube is ready and the Robot is waiting in the mailroom then start the delivery */
-                if(!tube.isEmpty()){
+                if(!storage.isEmpty()){
                 	deliveryCounter = 0; // reset delivery counter
         			behaviour.startDelivery();
         			setRoute();
@@ -83,7 +83,7 @@ public class Robot {
                 break;
     		case DELIVERING:
     			/** Check whether or not the call to return is triggered manually **/
-    			boolean wantToReturn = behaviour.returnToMailRoom(tube);
+    			boolean wantToReturn = behaviour.returnToMailRoom((StorageTube) storage);
     			if(current_floor == destination_floor){ // If already here drop off either way
                     /** Delivery complete, report this to the simulator! */
                     delivery.deliver(deliveryItem);
@@ -92,7 +92,7 @@ public class Robot {
                     	throw new ExcessiveDeliveryException();
                     }
                     /** Check if want to return or if there are more items in the tube*/
-                    if(wantToReturn || tube.isEmpty()){
+                    if(wantToReturn || storage.isEmpty()){
                     // if(tube.isEmpty()){
                     	changeState(RobotState.RETURNING);
                     }
@@ -128,7 +128,7 @@ public class Robot {
      */
     private void setRoute() throws ItemTooHeavyException{
         /** Pop the item from the StorageUnit */
-        deliveryItem = tube.pop();
+        deliveryItem = storage.takeItem();
         if (!strong && deliveryItem.weight > 2000) throw new ItemTooHeavyException(); 
         /** Set the destination floor */
         destination_floor = deliveryItem.getDestFloor();

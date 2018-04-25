@@ -6,7 +6,7 @@ import automail.Building;
 import automail.MailItem;
 import automail.PriorityMailItem;
 import automail.StorageTube;
-import exceptions.TubeFullException;
+import exceptions.StorageFullException;
 
 public class WeakStrongMailPool implements IMailPool{
 	private LinkedList<MailItem> upper;  // weak robot will take this set
@@ -56,7 +56,7 @@ public class WeakStrongMailPool implements IMailPool{
 				tube.addItem(q.remove());  // Could group/order by floor taking priority into account - but already better than simple
 			}
 		}
-		catch(TubeFullException e){
+		catch(StorageFullException e){
 			e.printStackTrace();
 		}
 	}
