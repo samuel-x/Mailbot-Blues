@@ -27,7 +27,6 @@ public class Properties {
             }
         }
 
-
         /**
          * This method loads our values in depending on the specified value in the line.
          * @param line

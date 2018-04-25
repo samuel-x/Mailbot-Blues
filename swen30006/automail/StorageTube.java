@@ -66,4 +66,8 @@ public class StorageTube implements Storage {
         return tube.pop();
     }
 
+    public boolean canDeliverPriorityItem() {
+        return (tube.peek() instanceof PriorityMailItem);
+    }
+
 }

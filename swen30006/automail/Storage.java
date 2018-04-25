@@ -40,4 +40,9 @@ public interface Storage {
      */
     boolean isEmpty();
 
+    /**
+     * This function returns a boolean of whether the current item is a priority item
+     */
+    boolean canDeliverPriorityItem();
+
 }

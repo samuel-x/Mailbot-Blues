@@ -1,7 +1,7 @@
 package strategies;
 
 import automail.MailItem;
-import automail.StorageTube;
+import automail.Storage;
 
 /**
  * addToPool is called when there are mail items newly arrived at the building to add to the MailPool or
@@ -18,9 +18,9 @@ public interface IMailPool {
     void addToPool(MailItem mailItem);
     
     /**
-     * @param tube refers to the pack the robot uses to deliver mail.
+     * @param storage refers to the pack the robot uses to deliver mail.
      * @param strong is whether the tube belongs to a strong robot.
      */
-	void fillStorageTube(StorageTube tube, boolean strong);
+	void fillStorageTube(Storage storage, boolean strong);
     
 }

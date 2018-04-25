@@ -71,7 +71,7 @@ public class Robot {
                 }
     		case WAITING:
     			/** Tell the sorter the robot is ready */
-    			mailPool.fillStorageTube((StorageTube) storage, strong);
+    			mailPool.fillStorageTube(storage, strong);
                 // System.out.println("Tube total size: "+tube.getTotalOfSizes());
                 /** If the StorageTube is ready and the Robot is waiting in the mailroom then start the delivery */
                 if(!storage.isEmpty()){
@@ -83,7 +83,7 @@ public class Robot {
                 break;
     		case DELIVERING:
     			/** Check whether or not the call to return is triggered manually **/
-    			boolean wantToReturn = behaviour.returnToMailRoom((StorageTube) storage);
+    			boolean wantToReturn = behaviour.returnToMailRoom(storage);
     			if(current_floor == destination_floor){ // If already here drop off either way
                     /** Delivery complete, report this to the simulator! */
                     delivery.deliver(deliveryItem);

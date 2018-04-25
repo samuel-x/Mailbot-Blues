@@ -24,6 +24,7 @@ public class Simulation {
         /** Read the .Properties file if it exists */
         Properties automailProperties;
         if (args.length != 0) {
+
             automailProperties = new Properties(args[0]);
         }
         else {
