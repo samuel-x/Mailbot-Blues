@@ -34,7 +34,14 @@ public class MailItem {
 
     @Override
     public String toString(){
-        return String.format("Mail Item:: ID: %11s | Arrival: %4d | Destination: %2d | Weight: %4d", id, arrivalTime, destinationFloor, weight );
+        String output = String.format("Mail Item:: ID: %11s | Arrival: %4d | Destination: %2d | Weight: %4d",
+                id, arrivalTime, destinationFloor, weight );
+
+        if (this.hasPriority()) {
+            output += String.format(" | Priority: %3d", this.getPriorityLevel());
+        }
+
+        return output;
     }
 
     /**
