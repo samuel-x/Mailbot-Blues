@@ -1,8 +1,10 @@
 package automail;
 
-import java.util.*;
-
 import strategies.IMailPool;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
 
 /**
  * This class generates the mail.
@@ -50,8 +52,9 @@ public class MailGenerator {
     private MailItem generateMail(){
         int dest_floor = generateDestinationFloor();
         // Cannot move this line down into the below 'else' block, which would result in only generating priority levels
-        // when a priority mail item has been generated. This is because it would result in fewer generation of priority
-        // levels, affecting the random number generator, changing final output of the program, which is not allowed.
+        // when a priority mail item has been generated. This is because it would result in fewer generations of
+        // priority levels, affecting the random number generator, changing final output of the program, which is not
+        // allowed.
         int priority_level = generatePriorityLevel();
         int arrival_time = generateArrivalTime();
         int weight = generateWeight();
