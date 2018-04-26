@@ -146,11 +146,11 @@ public class MailGenerator {
      * While there are steps left, create a new mail item to deliver
      * @return Priority
      */
-    public MailItem step(){
+    public MailItem step() {
     	MailItem priority = null;
     	// Check if there are any mail to create
-        if (this.allMail.containsKey(Clock.Time())){
-            for (MailItem mailItem : allMail.get(Clock.Time())){
+        if (this.allMail.containsKey(Clock.Time())) {
+            for (MailItem mailItem : allMail.get(Clock.Time())) {
             	if (mailItem.hasPriority()) {
             	    priority = mailItem;
                 }
@@ -158,6 +158,7 @@ public class MailGenerator {
                 mailPool.addToPool(mailItem);
             }
         }
+
         return priority;
     }
     
