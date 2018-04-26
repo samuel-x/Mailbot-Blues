@@ -30,11 +30,10 @@ public class MailGenerator {
      * @param mailPool where mail items go on arrival
      * @param seed random seed for generating mail
      */
-    public MailGenerator(int mailToCreate, IMailPool mailPool, HashMap<Boolean,Integer> seed){
-        if(seed.containsKey(true)){
-        	this.random = new Random((long) seed.get(true));
-        }
-        else{
+    public MailGenerator(int mailToCreate, IMailPool mailPool, Integer seed){
+        if (seed != null) {
+        	this.random = new Random(seed);
+        } else {
         	this.random = new Random();	
         }
         // Vary arriving mail by +/-20%

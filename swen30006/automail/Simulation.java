@@ -20,7 +20,7 @@ public class Simulation {
     private static final int MAIL_TO_CREATE = 180;
     
 
-    private static ArrayList<MailItem> MAIL_DELIVERED;
+    private static ArrayList<MailItem> MAIL_DELIVERED = new ArrayList<>();
     private static double total_score = 0;
 
     public static void main(String[] args) { //throws IOException {
@@ -43,20 +43,16 @@ public class Simulation {
 		int i = Integer.parseInt(automailProperties.getProperty("Name_of_Property"));
 */
 
-        MAIL_DELIVERED = new ArrayList<MailItem>();
-                
-        /** Used to see whether a seed is initialized or not */
-        HashMap<Boolean, Integer> seedMap = new HashMap<>();
+        // Initialize the seed used for the random number generator.
+        Integer seed = null;
         
         /** Read the first argument and save it as a seed if it exists */
-        if(args.length != 0){
-        	int seed = Integer.parseInt(args[0]);
-        	seedMap.put(true, seed);
-        } else{
-        	seedMap.put(false, 0);
+        if(args.length != 0) {
+            seed = Integer.parseInt(args[0]);
         }
-        Automail automail = new Automail();
-        MailGenerator generator = new MailGenerator(MAIL_TO_CREATE, automail.mailPool, seedMap);
+      
+        Automail automail = new Automail(new ReportDelivery());
+        MailGenerator generator = new MailGenerator(MAIL_TO_CREATE, automail.mailPool, seed);
         
         /** Initiate all the mail */
         generator.generateAllMail();
