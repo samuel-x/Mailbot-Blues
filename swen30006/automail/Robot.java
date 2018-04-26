@@ -11,7 +11,7 @@ import strategies.IRobotBehaviour;
  */
 public class Robot {
 
-	StorageTube tube;
+    StorageTube tube;
     IRobotBehaviour behaviour;
     protected final String id;
     /** Possible states the robot can be in */
@@ -34,9 +34,9 @@ public class Robot {
      * @param strong is whether the robot can carry heavy items
      */
     public Robot(IRobotBehaviour behaviour, IMailPool mailPool, boolean strong) {
-    	id = "R" + hashCode();
+        id = "R" + hashCode();
         // current_state = RobotState.WAITING;
-    	current_state = RobotState.RETURNING;
+        current_state = RobotState.RETURNING;
         current_floor = Building.MAILROOM_LOCATION;
         tube = new StorageTube();
         this.behaviour = behaviour;
@@ -52,74 +52,74 @@ public class Robot {
      * @throws InvalidStateTransitionException if the proposed state transition is invalid.
      */
     public void step() throws ExcessiveDeliveryException, ItemTooHeavyException, InvalidStateTransitionException {
-    	switch(current_state) {
-    		/** This state is triggered when the robot is returning to the mailroom after a delivery */
-    		case RETURNING:
-    			/** If its current position is at the mailroom, then the robot should change state */
+        switch(current_state) {
+            /** This state is triggered when the robot is returning to the mailroom after a delivery */
+            case RETURNING:
+                /** If its current position is at the mailroom, then the robot should change state */
                 if(current_floor == Building.MAILROOM_LOCATION){
-                	while(!tube.isEmpty()) {
-                		MailItem mailItem = tube.pop();
-                		mailPool.addToPool(mailItem);
+                    while(!tube.isEmpty()) {
+                        MailItem mailItem = tube.pop();
+                        mailPool.addToPool(mailItem);
                         System.out.printf("T: %3d > old addToPool [%s]%n", Clock.Time(), mailItem.toString());
-                	}
-                	changeState(RobotState.WAITING);
+                    }
+                    changeState(RobotState.WAITING);
                 } else {
-                	/** If the robot is not at the mailroom floor yet, then move towards it! */
+                    /** If the robot is not at the mailroom floor yet, then move towards it! */
                     moveTowards(Building.MAILROOM_LOCATION);
-                	break;
+                    break;
                 }
-    		case WAITING:
-    			/** Tell the sorter the robot is ready */
-    			mailPool.fillStorageTube(tube, strong);
+            case WAITING:
+                /** Tell the sorter the robot is ready */
+                mailPool.fillStorageTube(tube, strong);
                 // System.out.println("Tube total size: "+tube.getTotalOfSizes());
                 /** If the StorageTube is ready and the Robot is waiting in the mailroom then start the delivery */
                 if(!tube.isEmpty()){
-                	deliveryCounter = 0; // reset delivery counter
-        			behaviour.startDelivery();
-        			setRoute();
-                	changeState(RobotState.DELIVERING);
+                    deliveryCounter = 0; // reset delivery counter
+                    behaviour.startDelivery();
+                    setRoute();
+                    changeState(RobotState.DELIVERING);
                 }
                 break;
-    		case DELIVERING:
-    			/** Check whether or not the call to return is triggered manually **/
-    			boolean wantToReturn = behaviour.returnToMailRoom(tube);
-    			if(current_floor == destination_floor){ // If already here drop off either way
+            case DELIVERING:
+                /** Check whether or not the call to return is triggered manually **/
+                boolean wantToReturn = behaviour.returnToMailRoom(tube);
+                if(current_floor == destination_floor){ // If already here drop off either way
                     /** Delivery complete, report this to the simulator! */
                     Simulation.reportDelivery(deliveryItem);
                     deliveryCounter++;
                     if(deliveryCounter > 4){
-                    	throw new ExcessiveDeliveryException();
+                        throw new ExcessiveDeliveryException();
                     }
                     /** Check if want to return or if there are more items in the tube*/
                     if(wantToReturn || tube.isEmpty()){
                     // if(tube.isEmpty()){
-                    	changeState(RobotState.RETURNING);
+                        changeState(RobotState.RETURNING);
                     }
                     else{
                         /** If there are more items, set the robot's route to the location to deliver the item */
                         setRoute();
                         changeState(RobotState.DELIVERING);
                     }
-    			} else
-    			{/*
-	    			if(wantToReturn){
-	    				// Put the item we are trying to deliver back
-	    				try {
-							tube.addItem(deliveryItem);
-						} catch (TubeFullException e) {
-							e.printStackTrace();
-						}
-	    				changeState(RobotState.RETURNING);
-	    			}
-	    			else{*/
-	        			/** The robot is not at the destination yet, move towards it! */
-	                        moveTowards(destination_floor);
-	                /*
-	    			}
-	    			*/
-    			}
+                } else
+                {/*
+                    if(wantToReturn){
+                        // Put the item we are trying to deliver back
+                        try {
+                            tube.addItem(deliveryItem);
+                        } catch (TubeFullException e) {
+                            e.printStackTrace();
+                        }
+                        changeState(RobotState.RETURNING);
+                    }
+                    else{*/
+                        /** The robot is not at the destination yet, move towards it! */
+                            moveTowards(destination_floor);
+                    /*
+                    }
+                    */
+                }
                 break;
-    	}
+        }
     }
 
     /**
@@ -154,15 +154,15 @@ public class Robot {
     private void changeState(RobotState newState) throws InvalidStateTransitionException {
         checkValidStateTransition(this.current_state, newState);
 
-    	if (current_state != newState) {
+        if (current_state != newState) {
             System.out.printf("T: %3d > %11s changed from %s to %s%n", Clock.Time(), id, current_state, newState);
-    	}
+        }
 
-    	current_state = newState;
+        current_state = newState;
 
-    	if (newState == RobotState.DELIVERING) {
+        if (newState == RobotState.DELIVERING) {
             System.out.printf("T: %3d > %11s-> [%s]%n", Clock.Time(), id, deliveryItem.toString());
-    	}
+        }
     }
 
     /**

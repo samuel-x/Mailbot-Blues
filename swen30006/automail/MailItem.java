@@ -6,7 +6,7 @@ package automail;
  * Represents a mail item
  */
 public class MailItem {
-	
+
     /** Represents the destination floor to which the mail is intended to go */
     private final int destinationFloor;
     /** The mail identifier */

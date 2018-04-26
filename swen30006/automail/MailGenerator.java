@@ -30,9 +30,9 @@ public class MailGenerator {
      */
     public MailGenerator(int mailToCreate, int lastDeliveryTime, IMailPool mailPool, Integer seed){
         if (seed != null) {
-        	this.random = new Random(seed);
+            this.random = new Random(seed);
         } else {
-        	this.random = new Random();	
+            this.random = new Random();
         }
         // Vary arriving mail by +/-20%
         this.MAIL_TO_CREATE = mailToCreate*4/5 + random.nextInt(mailToCreate * 2/5);
@@ -56,14 +56,14 @@ public class MailGenerator {
         int arrival_time = generateArrivalTime();
         int weight = generateWeight();
         // Check if arrival time has a priority mail
-        if(	(random.nextInt(6) > 0) ||  // Skew towards non priority mail
-        	(allMail.containsKey(arrival_time) &&
-        	allMail.get(arrival_time).stream().anyMatch(MailItem::hasPriority)))
+        if(    (random.nextInt(6) > 0) ||  // Skew towards non priority mail
+            (allMail.containsKey(arrival_time) &&
+            allMail.get(arrival_time).stream().anyMatch(MailItem::hasPriority)))
         {
-        	return new MailItem(dest_floor, arrival_time, weight, 0);
+            return new MailItem(dest_floor, arrival_time, weight, 0);
 
         } else {
-        	return new MailItem(dest_floor, arrival_time, weight, priority_level);
+            return new MailItem(dest_floor, arrival_time, weight, priority_level);
         }   
     }
 
@@ -85,11 +85,11 @@ public class MailGenerator {
      * @return a random weight
      */
     private int generateWeight(){
-    	final double mean = 200.0; // grams for normal item
-    	final double stddev = 700.0; // grams
-    	double base = random.nextGaussian();
-    	if (base < 0) base = -base;
-    	int weight = (int) (mean + base * stddev);
+        final double mean = 200.0; // grams for normal item
+        final double stddev = 700.0; // grams
+        double base = random.nextGaussian();
+        if (base < 0) base = -base;
+        int weight = (int) (mean + base * stddev);
         return weight > 5000 ? 5000 : weight;
     }
     
@@ -144,12 +144,12 @@ public class MailGenerator {
      * @return Priority
      */
     public MailItem step() {
-    	MailItem priority = null;
-    	// Check if there are any mail to create
+        MailItem priority = null;
+        // Check if there are any mail to create
         if (this.allMail.containsKey(Clock.Time())) {
             for (MailItem mailItem : allMail.get(Clock.Time())) {
-            	if (mailItem.hasPriority()) {
-            	    priority = mailItem;
+                if (mailItem.hasPriority()) {
+                    priority = mailItem;
                 }
                 System.out.printf("T: %3d > new addToPool [%s]%n", Clock.Time(), mailItem.toString());
                 mailPool.addToPool(mailItem);

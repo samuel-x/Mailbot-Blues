@@ -20,23 +20,23 @@ public class Simulation {
     private static double totalScore = 0;
 
     public static void main(String[] args) { //throws IOException {
- /*   	// Should probably be using properties here
-    	Properties automailProperties = new Properties();
-		// Defaults
-		automailProperties.setProperty("Name_of_Property", "20");  // Property value may need to be converted from a string to the appropriate type
+ /*       // Should probably be using properties here
+        Properties automailProperties = new Properties();
+        // Defaults
+        automailProperties.setProperty("Name_of_Property", "20");  // Property value may need to be converted from a string to the appropriate type
 
-		FileReader inStream = null;
-		
-		try {
-			inStream = new FileReader("automail.properties");
-			automailProperties.load(inStream);
-		} finally {
-			 if (inStream != null) {
-	                inStream.close();
-	            }
-		}
-		
-		int i = Integer.parseInt(automailProperties.getProperty("Name_of_Property"));
+        FileReader inStream = null;
+
+        try {
+            inStream = new FileReader("automail.properties");
+            automailProperties.load(inStream);
+        } finally {
+             if (inStream != null) {
+                    inStream.close();
+                }
+        }
+
+        int i = Integer.parseInt(automailProperties.getProperty("Name_of_Property"));
 */
 
         // Initialize the seed used for the random number generator.
@@ -56,20 +56,20 @@ public class Simulation {
         generator.generateAllMail();
         MailItem priority;
         while(mailDelivered.size() != generator.MAIL_TO_CREATE) {
-        	//System.out.println("-- Step: "+Clock.Time());
+            //System.out.println("-- Step: "+Clock.Time());
             priority = generator.step();
             if (priority != null) {
-            	automail.robot1.behaviour.priorityArrival(priority.getPriorityLevel(), priority.getWeight());
-            	automail.robot2.behaviour.priorityArrival(priority.getPriorityLevel(), priority.getWeight());
+                automail.robot1.behaviour.priorityArrival(priority.getPriorityLevel(), priority.getWeight());
+                automail.robot2.behaviour.priorityArrival(priority.getPriorityLevel(), priority.getWeight());
             }
             try {
-				automail.robot1.step();
-				automail.robot2.step();
-			} catch (ExcessiveDeliveryException | ItemTooHeavyException | InvalidStateTransitionException e) {
-				e.printStackTrace();
-				System.out.println("Simulation unable to complete.");
-				System.exit(0);
-			}
+                automail.robot1.step();
+                automail.robot2.step();
+            } catch (ExcessiveDeliveryException | ItemTooHeavyException | InvalidStateTransitionException e) {
+                e.printStackTrace();
+                System.out.println("Simulation unable to complete.");
+                System.exit(0);
+            }
             Clock.Tick();
         }
         printResults();
@@ -102,9 +102,9 @@ public class Simulation {
     }
 
     private static double calculateDeliveryScore(MailItem deliveryItem) {
-    	// Penalty for longer delivery times
-    	final double penalty = 1.1;
-    	double priority_weight = deliveryItem.getPriorityLevel();
+        // Penalty for longer delivery times
+        final double penalty = 1.1;
+        double priority_weight = deliveryItem.getPriorityLevel();
         // Take (delivery time - arrivalTime)**penalty * (1+sqrt(priority_weight))
         return Math.pow(Clock.Time() - deliveryItem.getArrivalTime(),penalty)*(1+Math.sqrt(priority_weight));
     }

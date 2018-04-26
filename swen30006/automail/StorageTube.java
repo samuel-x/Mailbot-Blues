@@ -38,7 +38,7 @@ public class StorageTube {
      * @return the first item in the storage tube (without removing it)
      */
     public MailItem peek() {
-    	return tube.peek();
+        return tube.peek();
     }
 
     /**
@@ -48,7 +48,7 @@ public class StorageTube {
      */
     public void addItem(MailItem item) throws TubeFullException {
         if(tube.size() < MAXIMUM_CAPACITY){
-        	tube.add(item);
+            tube.add(item);
         } else {
             throw new TubeFullException();
         }
@@ -56,7 +56,7 @@ public class StorageTube {
 
     /** @return the size of the tube **/
     public int getSize(){
-    	return tube.size();
+        return tube.size();
     }
     
     /** 
