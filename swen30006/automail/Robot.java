@@ -66,6 +66,7 @@ public class Robot {
                     moveTowards(Building.MAILROOM_LOCATION);
                 	break;
                 }
+
     		case WAITING:
                 // Tell the sorter the robot is ready
                 this.mailPool.fillStorageTube(this.tube, this.strong);
@@ -78,6 +79,7 @@ public class Robot {
                 	changeState(RobotState.DELIVERING);
                 }
                 break;
+
     		case DELIVERING:
                 // Check whether or not the call to return is triggered manually
     			boolean wantToReturn = this.behaviour.returnToMailRoom(this.tube);

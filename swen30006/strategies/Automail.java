@@ -13,7 +13,7 @@ public class Automail {
 		// Initialize the MailPool
 
     	// Swap the next line for the one below
-    	mailPool = new WeakStrongMailPool();
+		this.mailPool = new WeakStrongMailPool();
 
 		// Initialize the RobotAction
     	boolean weak = false;  // Can't handle more than 2000 grams
@@ -24,8 +24,8 @@ public class Automail {
     	IRobotBehaviour robotBehaviourS = new MyRobotBehaviour(strong);
 
 		// Initialize robot
-    	robot1 = new Robot(robotBehaviourW, mailPool, weak); // shared behaviour because identical and stateless
-    	robot2 = new Robot(robotBehaviourS, mailPool, strong);
+		this.robot1 = new Robot(robotBehaviourW, this.mailPool, weak); // shared behaviour because identical and stateless
+		this.robot2 = new Robot(robotBehaviourS, this.mailPool, strong);
     }
     
 }

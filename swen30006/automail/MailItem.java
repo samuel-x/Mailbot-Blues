@@ -22,7 +22,7 @@ public class MailItem {
      * @param arrivalTime the time that the mail arrived
      * @param weight the weight of this mail item
      */
-    public MailItem (int destinationFloor, int arrivalTime, int weight, int priorityLevel) {
+    public MailItem(int destinationFloor, int arrivalTime, int weight, int priorityLevel) {
         this.destinationFloor = destinationFloor;
         this.id = String.valueOf(hashCode());
         this.arrivalTime = arrivalTime;
@@ -33,7 +33,7 @@ public class MailItem {
     @Override
     public String toString() {
         String output = String.format("Mail Item:: ID: %11s | Arrival: %4d | Destination: %2d | Weight: %4d",
-                id, arrivalTime, destinationFloor, weight );
+                this.id, this.arrivalTime, this.destinationFloor, this.weight);
 
         if (this.hasPriority()) {
             output += String.format(" | Priority: %3d", this.getPriorityLevel());
@@ -43,38 +43,35 @@ public class MailItem {
     }
 
     /**
-     *
      * @return the destination floor of the mail item
      */
     public int getDestFloor() {
-        return destinationFloor;
+        return this.destinationFloor;
     }
     
     /**
      * @return the ID of the mail item
      */
     public String getId() {
-        return id;
+        return this.id;
     }
 
     /**
-     *
      * @return the arrival time of the mail item
      */
     public int getArrivalTime() {
-        return arrivalTime;
+        return this.arrivalTime;
     }
 
     /**
-    *
     * @return the weight of the mail item
     */
     public int getWeight() {
-        return weight;
+        return this.weight;
     }
 
     public int getPriorityLevel() {
-        return priorityLevel;
+        return this.priorityLevel;
     }
 
     public boolean hasPriority() {
