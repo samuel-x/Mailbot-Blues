@@ -5,11 +5,8 @@ import exceptions.ItemTooHeavyException;
 import exceptions.MailAlreadyDeliveredException;
 import strategies.Automail;
 
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Properties;
 
 /**
  * This class simulates the behaviour of AutoMail
@@ -18,10 +15,9 @@ public class Simulation {
 
     /** Constant for the mail generator */
     private static final int MAIL_TO_CREATE = 180;
-    
-
-    private static ArrayList<MailItem> MAIL_DELIVERED = new ArrayList<>();
-    private static double total_score = 0;
+  
+    private static ArrayList<MailItem> mailDelivered;
+    private static double totalScore = 0;
 
     public static void main(String[] args) { //throws IOException {
  /*   	// Should probably be using properties here
@@ -52,6 +48,7 @@ public class Simulation {
         }
       
         Automail automail = new Automail(new ReportDelivery());
+
         MailGenerator generator = new MailGenerator(MAIL_TO_CREATE, automail.mailPool, seed);
         
         /** Initiate all the mail */
@@ -109,5 +106,11 @@ public class Simulation {
     	double priority_weight = deliveryItem.getPriorityLevel();
         // Take (delivery time - arrivalTime)**penalty * (1+sqrt(priority_weight))
         return Math.pow(Clock.Time() - deliveryItem.getArrivalTime(),penalty)*(1+Math.sqrt(priority_weight));
+    }
+  
+    public static void printResults(){
+        System.out.println("T: "+Clock.Time()+" | Simulation complete!");
+        System.out.println("Final Delivery time: "+Clock.Time());
+        System.out.printf("Final Score: %.2f%n", totalScore);
     }
 }
