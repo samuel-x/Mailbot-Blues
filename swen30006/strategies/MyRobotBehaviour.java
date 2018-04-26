@@ -1,5 +1,6 @@
 package strategies;
-import automail.*;
+
+import automail.Storage;
 
 public class MyRobotBehaviour implements IRobotBehaviour {
 	
@@ -17,7 +18,7 @@ public class MyRobotBehaviour implements IRobotBehaviour {
 	
 	@Override
     public void priorityArrival(int priority, int weight) {
-    	if (priority > newPriority) newPriority = priority;  // Only the strong robot will deliver priority items so weight of no interest
+    	if (priority > newPriority) newPriority = priority;  // Only the strong robot will reportDelivery priority items so weight of no interest
     }
 	
 	@Override

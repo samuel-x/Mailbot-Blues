@@ -13,11 +13,8 @@ import java.util.HashMap;
  */
 public class Simulation {
 
-    /** Constant for the mail generator */
-    private static final int MAIL_TO_CREATE = 180;
-
-    private static ArrayList<MailItem> MAIL_DELIVERED;
-    private static double total_score = 0;
+    private static ArrayList<MailItem> mailDelivered = new ArrayList<>();
+    private static double totalScore = 0;
 
     public static void main(String[] args) {
 
@@ -31,30 +28,22 @@ public class Simulation {
             throw new IllegalArgumentException("No arguments input. Please give a valid path.");
         }
 
-        MAIL_DELIVERED = new ArrayList<MailItem>();
-                
-        /** Used to see whether a seed is initialized or not */
-        HashMap<Boolean, Integer> seedMap = new HashMap<>();
-        
-        /** Read the first argument and save it as a seed if it exists */
-        if(automailProperties.getSeed() != 0){
-        	seedMap.put(true, automailProperties.getSeed());
-        } else{
-        	seedMap.put(false, 0);
-        }
+        // Initialize the seed used for the random number generator.
+        Integer seed = automailProperties.getSeed();
 
-        Automail automail = new Automail(new ReportDelivery());
-        MailGenerator generator = new MailGenerator(MAIL_TO_CREATE, automail.mailPool, seedMap);
+        Automail automail = new Automail();
+
+        MailGenerator generator = new MailGenerator(automailProperties.getMailToCreate(), automailProperties.getLastDeliveryTime(), automail.mailPool, seed);
         
         /** Initiate all the mail */
         generator.generateAllMail();
-        PriorityMailItem priority;
-        while(MAIL_DELIVERED.size() != generator.MAIL_TO_CREATE) {
+        MailItem priority;
+        while(mailDelivered.size() != generator.MAIL_TO_CREATE) {
         	//System.out.println("-- Step: "+Clock.Time());
             priority = generator.step();
             if (priority != null) {
-            	automail.robot1.behaviour.priorityArrival(priority.getPriorityLevel(), priority.weight);
-            	automail.robot2.behaviour.priorityArrival(priority.getPriorityLevel(), priority.weight);
+            	automail.robot1.behaviour.priorityArrival(priority.getPriorityLevel(), priority.getWeight());
+            	automail.robot2.behaviour.priorityArrival(priority.getPriorityLevel(), priority.getWeight());
             }
             try {
 				automail.robot1.step();
@@ -68,42 +57,38 @@ public class Simulation {
         }
         printResults();
     }
-    
-    static class ReportDelivery implements IMailDelivery {
-    	
-    	/** Confirm the delivery and calculate the total score */
-    	public void deliver(MailItem deliveryItem){
-    		if(!MAIL_DELIVERED.contains(deliveryItem)){
-                System.out.printf("T: %3d > Delivered     [%s]%n", Clock.Time(), deliveryItem.toString());
-    			MAIL_DELIVERED.add(deliveryItem);
-    			// Calculate delivery score
-    			total_score += calculateDeliveryScore(deliveryItem);
-    		}
-    		else{
-    			try {
-    				throw new MailAlreadyDeliveredException();
-    			} catch (MailAlreadyDeliveredException e) {
-    				e.printStackTrace();
-    			}
-    		}
-    	}
 
+    /**
+     * Called when a Robot delivers an item in order to register that fact with the simulation.
+     * @param deliveryItem The MailItem that was delivered.
+     */
+    public static void reportDelivery(MailItem deliveryItem) {
+        if (!mailDelivered.contains(deliveryItem)) {
+            System.out.printf("T: %3d > Delivered     [%s]%n", Clock.Time(), deliveryItem.toString());
+            mailDelivered.add(deliveryItem);
+            // Calculate delivery score
+            totalScore += calculateDeliveryScore(deliveryItem);
+
+        } else {
+            try {
+                throw new MailAlreadyDeliveredException();
+            } catch (MailAlreadyDeliveredException e) {
+                e.printStackTrace();
+            }
+        }
     }
-    
+
+    public static void printResults() {
+        System.out.println("T: "+Clock.Time()+" | Simulation complete!");
+        System.out.println("Final Delivery time: " + Clock.Time());
+        System.out.printf("Final Score: %.2f%n", totalScore);
+    }
+
     private static double calculateDeliveryScore(MailItem deliveryItem) {
     	// Penalty for longer delivery times
     	final double penalty = 1.1;
-    	double priority_weight = 0;
+    	double priority_weight = deliveryItem.getPriorityLevel();
         // Take (delivery time - arrivalTime)**penalty * (1+sqrt(priority_weight))
-    	if(deliveryItem instanceof PriorityMailItem){
-    		priority_weight = ((PriorityMailItem) deliveryItem).getPriorityLevel();
-    	}
         return Math.pow(Clock.Time() - deliveryItem.getArrivalTime(),penalty)*(1+Math.sqrt(priority_weight));
-    }
-
-    public static void printResults(){
-        System.out.println("T: "+Clock.Time()+" | Simulation complete!");
-        System.out.println("Final Delivery time: "+Clock.Time());
-        System.out.printf("Final Score: %.2f%n", total_score);
     }
 }
