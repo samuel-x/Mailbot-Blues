@@ -14,7 +14,6 @@ public class Robot {
     IRobotBehaviour behaviour;
     protected final String id;
     /** Possible states the robot can be in */
-    public enum RobotState { DELIVERING, WAITING, RETURNING }
     public RobotState current_state;
     private int current_floor;
     private int destination_floor;
