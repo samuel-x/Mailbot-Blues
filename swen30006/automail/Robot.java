@@ -178,20 +178,27 @@ public class Robot {
             return;
         }
 
-        if (newState == RobotState.DELIVERING) {
-            if (currentState != RobotState.WAITING) {
-                throw new InvalidStateTransitionException(currentState, newState);
-            }
+        switch (newState) {
+            case DELIVERING:
+                if (currentState != RobotState.WAITING) {
+                    throw new InvalidStateTransitionException(currentState, newState);
+                }
 
-        } else if (newState == RobotState.RETURNING) {
-            if (currentState != RobotState.DELIVERING) {
-                throw new InvalidStateTransitionException(currentState, newState);
-            }
+                break;
 
-        } else if (newState == RobotState.WAITING) {
-            if (currentState != RobotState.RETURNING) {
-                throw new InvalidStateTransitionException(currentState, newState);
-            }
+            case RETURNING:
+                if (currentState != RobotState.DELIVERING) {
+                    throw new InvalidStateTransitionException(currentState, newState);
+                }
+
+                break;
+
+            case WAITING:
+                if (currentState != RobotState.RETURNING) {
+                    throw new InvalidStateTransitionException(currentState, newState);
+                }
+
+                break;
         }
     }
 }

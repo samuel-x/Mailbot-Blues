@@ -7,7 +7,6 @@ import exceptions.MailAlreadyDeliveredException;
 import strategies.Automail;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * This class simulates the behaviour of AutoMail
