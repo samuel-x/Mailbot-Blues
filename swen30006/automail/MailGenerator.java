@@ -1,8 +1,10 @@
 package automail;
 
-import java.util.*;
-
 import strategies.IMailPool;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
 
 /**
  * This class generates the mail.
@@ -26,11 +28,10 @@ public class MailGenerator {
      * @param mailPool where mail items go on arrival
      * @param seed random seed for generating mail
      */
-    public MailGenerator(int mailToCreate, int lastDeliveryTime, IMailPool mailPool, HashMap<Boolean,Integer> seed){
-        if(seed.containsKey(true)){
-        	this.random = new Random((long) seed.get(true));
-        }
-        else{
+    public MailGenerator(int mailToCreate, IMailPool mailPool, Integer seed){
+        if (seed != null) {
+        	this.random = new Random(seed);
+        } else {
         	this.random = new Random();	
         }
         // Vary arriving mail by +/-20%
@@ -47,17 +48,22 @@ public class MailGenerator {
      */
     private MailItem generateMail(){
         int dest_floor = generateDestinationFloor();
+        // Cannot move this line down into the below 'else' block, which would result in only generating priority levels
+        // when a priority mail item has been generated. This is because it would result in fewer generations of
+        // priority levels, affecting the random number generator, changing final output of the program, which is not
+        // allowed.
         int priority_level = generatePriorityLevel();
         int arrival_time = generateArrivalTime();
         int weight = generateWeight();
         // Check if arrival time has a priority mail
         if(	(random.nextInt(6) > 0) ||  // Skew towards non priority mail
         	(allMail.containsKey(arrival_time) &&
-        	allMail.get(arrival_time).stream().anyMatch(e -> PriorityMailItem.class.isInstance(e))))
+        	allMail.get(arrival_time).stream().anyMatch(MailItem::hasPriority)))
         {
-        	return new MailItem(dest_floor,arrival_time,weight);      	
+        	return new MailItem(dest_floor, arrival_time, weight, 0);
+
         } else {
-        	return new PriorityMailItem(dest_floor,arrival_time,weight,priority_level);
+        	return new MailItem(dest_floor, arrival_time, weight, priority_level);
         }   
     }
 
@@ -118,7 +124,7 @@ public class MailGenerator {
                 /** If the key doesn't exist then set a new key along with the array of MailItems to add during
                  * that time step.
                  */
-                ArrayList<MailItem> newMailList = new ArrayList<MailItem>();
+                ArrayList<MailItem> newMailList = new ArrayList<>();
                 newMailList.add(newMail);
                 allMail.put(timeToDeliver,newMailList);
             }
@@ -137,16 +143,19 @@ public class MailGenerator {
      * While there are steps left, create a new mail item to deliver
      * @return Priority
      */
-    public PriorityMailItem step(){
-    	PriorityMailItem priority = null;
+    public MailItem step() {
+    	MailItem priority = null;
     	// Check if there are any mail to create
-        if(this.allMail.containsKey(Clock.Time())){
-            for(MailItem mailItem : allMail.get(Clock.Time())){
-            	if (mailItem instanceof PriorityMailItem) priority = ((PriorityMailItem) mailItem);
+        if (this.allMail.containsKey(Clock.Time())) {
+            for (MailItem mailItem : allMail.get(Clock.Time())) {
+            	if (mailItem.hasPriority()) {
+            	    priority = mailItem;
+                }
                 System.out.printf("T: %3d > new addToPool [%s]%n", Clock.Time(), mailItem.toString());
                 mailPool.addToPool(mailItem);
             }
         }
+
         return priority;
     }
     
