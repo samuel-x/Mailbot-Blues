@@ -6,7 +6,6 @@ import exceptions.MailAlreadyDeliveredException;
 import strategies.Automail;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * This class simulates the behaviour of AutoMail
@@ -50,17 +49,18 @@ public class Simulation {
         Automail automail = new Automail();
 
         // TODO: Replace the 300 (should be replaced with Properties.get____() that Sam is working on).
-        MailGenerator generator = new MailGenerator(MAIL_TO_CREATE, 300, automail.mailPool, seed);
+        MailGenerator generator = new MailGenerator(MAIL_TO_CREATE, 300, seed);
         
         /** Initiate all the mail */
         generator.generateAllMail();
-        MailItem priority;
+        MailItem priorityMail;
         while(mailDelivered.size() != generator.MAIL_TO_CREATE) {
         	//System.out.println("-- Step: "+Clock.Time());
-            priority = generator.step();
-            if (priority != null) {
-            	automail.robot1.behaviour.priorityArrival(priority.getPriorityLevel(), priority.getWeight());
-            	automail.robot2.behaviour.priorityArrival(priority.getPriorityLevel(), priority.getWeight());
+            generator.addMailToPool(automail.mailPool, Clock.Time());
+            priorityMail = generator.getPriorityMailAtTime(Clock.Time());
+            if (priorityMail != null) {
+            	automail.robot1.behaviour.priorityArrival(priorityMail.getPriorityLevel(), priorityMail.getWeight());
+            	automail.robot2.behaviour.priorityArrival(priorityMail.getPriorityLevel(), priorityMail.getWeight());
             }
             try {
 				automail.robot1.step();

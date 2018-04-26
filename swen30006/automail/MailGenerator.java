@@ -19,16 +19,14 @@ public class MailGenerator {
 
     private int mailCreated;
     private boolean complete;
-    private IMailPool mailPool;
     private HashMap<Integer, ArrayList<MailItem>> allMail = new HashMap<>();
 
     /**
      * Constructor for mail generation
      * @param mailToCreate roughly how many mail items to create
-     * @param mailPool where mail items go on arrival
      * @param seed random seed for generating mail
      */
-    public MailGenerator(int mailToCreate, int lastDeliveryTime, IMailPool mailPool, Integer seed){
+    public MailGenerator(int mailToCreate, int lastDeliveryTime, Integer seed){
         if (seed != null) {
         	this.random = new Random(seed);
         } else {
@@ -40,7 +38,6 @@ public class MailGenerator {
 
         this.mailCreated = 0;
         this.complete = false;
-        this.mailPool = mailPool;
     }
 
     /**
@@ -138,25 +135,30 @@ public class MailGenerator {
         }
 
     }
-    
+
     /**
-     * While there are steps left, create a new mail item to deliver
-     * @return Priority
+     * Adds all mail from the given time to the given mail pool.
+     * @param mailPool The mail pool to add mail to.
+     * @param timeStamp The time stamp from which mail is added.
      */
-    public MailItem step() {
-    	MailItem priority = null;
-    	// Check if there are any mail to create
-        if (this.allMail.containsKey(Clock.Time())) {
-            for (MailItem mailItem : allMail.get(Clock.Time())) {
-            	if (mailItem.hasPriority()) {
-            	    priority = mailItem;
-                }
+    public void addMailToPool(IMailPool mailPool, int timeStamp) {
+    	// Check if there are any mail to add.
+        if (this.allMail.containsKey(timeStamp)) {
+            for (MailItem mailItem : allMail.get(timeStamp)) {
                 System.out.printf("T: %3d > new addToPool [%s]%n", Clock.Time(), mailItem.toString());
                 mailPool.addToPool(mailItem);
             }
         }
-
-        return priority;
     }
-    
+
+    /**
+     * Get the priority mail item at the given time, if present.
+     * @param timeStamp The time stamp that's being checking for priority mail.
+     * @return The mail item if present. Otherwise, returns null.
+     */
+    public MailItem getPriorityMailAtTime(int timeStamp) {
+        ArrayList<MailItem> items = this.allMail.get(timeStamp);
+
+        return items == null ? null : items.stream().filter(MailItem::hasPriority).findFirst().orElse(null);
+    }
 }
