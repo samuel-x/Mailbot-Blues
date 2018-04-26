@@ -46,8 +46,9 @@ public class Simulation {
         if(args.length != 0) {
             seed = Integer.parseInt(args[0]);
         }
-      
-        Automail automail = new Automail();
+        
+        // TODO: Read in robot types from properties - hard coded right now
+        Automail automail = new Automail("weak", "strong");
 
         // TODO: Replace the 300 (should be replaced with Properties.get____() that Sam is working on).
         MailGenerator generator = new MailGenerator(MAIL_TO_CREATE, 300, automail.mailPool, seed);
