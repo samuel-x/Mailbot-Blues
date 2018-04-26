@@ -4,7 +4,6 @@ import java.util.*;
 
 import automail.Building;
 import automail.MailItem;
-import automail.PriorityMailItem;
 import automail.StorageTube;
 import exceptions.TubeFullException;
 
@@ -21,17 +20,17 @@ public class WeakStrongMailPool implements IMailPool{
 		divider = Building.FLOORS / 2;  // Top normal floor for strong robot
 	}
 
-	private int priority(MailItem m) {
-		return (m instanceof PriorityMailItem) ? ((PriorityMailItem) m).getPriorityLevel() : 0;
+	private int priority(MailItem mailItem) {
+		return mailItem.getPriorityLevel();
 	}
 	
 	public void addToPool(MailItem mailItem) {
 		// This doesn't attempt to put the re-add items back in time order but there will be relatively few of them,
 		// from the strong robot only, and only when it is recalled with undelivered items.
 		// Check whether mailItem is for strong robot
-		if (mailItem instanceof PriorityMailItem || mailItem.getWeight() > MAX_WEIGHT || mailItem.getDestFloor() <= divider) {
-			if (mailItem instanceof PriorityMailItem) {  // Add in priority order
-				int priority = ((PriorityMailItem) mailItem).getPriorityLevel();
+		if (mailItem.hasPriority() || mailItem.getWeight() > MAX_WEIGHT || mailItem.getDestFloor() <= divider) {
+			if (mailItem.hasPriority()) {  // Add in priority order
+				int priority = mailItem.getPriorityLevel();
 				ListIterator<MailItem> i = lower.listIterator();
 				while (i.hasNext()) {
 					if (priority(i.next()) < priority) {

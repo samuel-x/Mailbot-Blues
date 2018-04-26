@@ -12,7 +12,6 @@ public class Robot {
 
 	StorageTube tube;
     IRobotBehaviour behaviour;
-    IMailDelivery delivery;
     protected final String id;
     /** Possible states the robot can be in */
     public enum RobotState { DELIVERING, WAITING, RETURNING }
@@ -31,18 +30,16 @@ public class Robot {
      * Initiates the robot's location at the start to be at the mailroom
      * also set it to be waiting for mail.
      * @param behaviour governs selection of mail items for delivery and behaviour on priority arrivals
-     * @param delivery governs the final delivery
      * @param mailPool is the source of mail items
      * @param strong is whether the robot can carry heavy items
      */
-    public Robot(IRobotBehaviour behaviour, IMailDelivery delivery, IMailPool mailPool, boolean strong){
+    public Robot(IRobotBehaviour behaviour, IMailPool mailPool, boolean strong) {
     	id = "R" + hashCode();
         // current_state = RobotState.WAITING;
     	current_state = RobotState.RETURNING;
         current_floor = Building.MAILROOM_LOCATION;
         tube = new StorageTube();
         this.behaviour = behaviour;
-        this.delivery = delivery;
         this.mailPool = mailPool;
         this.strong = strong;
         this.deliveryCounter = 0;
@@ -86,7 +83,7 @@ public class Robot {
     			boolean wantToReturn = behaviour.returnToMailRoom(tube);
     			if(current_floor == destination_floor){ // If already here drop off either way
                     /** Delivery complete, report this to the simulator! */
-                    delivery.deliver(deliveryItem);
+                    Simulation.reportDelivery(deliveryItem);
                     deliveryCounter++;
                     if(deliveryCounter > 4){
                     	throw new ExcessiveDeliveryException();
@@ -129,7 +126,7 @@ public class Robot {
     private void setRoute() throws ItemTooHeavyException{
         /** Pop the item from the StorageUnit */
         deliveryItem = tube.pop();
-        if (!strong && deliveryItem.weight > 2000) throw new ItemTooHeavyException(); 
+        if (!strong && deliveryItem.getWeight() > 2000) throw new ItemTooHeavyException();
         /** Set the destination floor */
         destination_floor = deliveryItem.getDestFloor();
     }
