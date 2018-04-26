@@ -1,6 +1,7 @@
 package automail;
 
 import exceptions.ExcessiveDeliveryException;
+import exceptions.InvalidStateTransitionException;
 import exceptions.ItemTooHeavyException;
 import exceptions.MailAlreadyDeliveredException;
 import strategies.Automail;
@@ -65,7 +66,7 @@ public class Simulation {
             try {
 				automail.robot1.step();
 				automail.robot2.step();
-			} catch (ExcessiveDeliveryException|ItemTooHeavyException e) {
+			} catch (ExcessiveDeliveryException | ItemTooHeavyException | InvalidStateTransitionException e) {
 				e.printStackTrace();
 				System.out.println("Simulation unable to complete.");
 				System.exit(0);

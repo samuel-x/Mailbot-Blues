@@ -1,6 +1,7 @@
 package automail;
 
 import exceptions.ExcessiveDeliveryException;
+import exceptions.InvalidStateTransitionException;
 import exceptions.ItemTooHeavyException;
 import strategies.IMailPool;
 import strategies.IRobotBehaviour;
@@ -45,10 +46,12 @@ public class Robot {
     }
 
     /**
-     * This is called on every time step
-     * @throws ExcessiveDeliveryException if robot delivers more than the capacity of the tube without refilling
+     * This is called on every time step.
+     * @throws ExcessiveDeliveryException if robot delivers more than the capacity of the tube without refilling.
+     * @throws ItemTooHeavyException if the robot is weak and tries to deliver a heavy object.
+     * @throws InvalidStateTransitionException if the proposed state transition is invalid.
      */
-    public void step() throws ExcessiveDeliveryException, ItemTooHeavyException{    	
+    public void step() throws ExcessiveDeliveryException, ItemTooHeavyException, InvalidStateTransitionException {
     	switch(current_state) {
     		/** This state is triggered when the robot is returning to the mailroom after a delivery */
     		case RETURNING:
@@ -122,7 +125,7 @@ public class Robot {
     /**
      * Sets the route for the robot
      */
-    private void setRoute() throws ItemTooHeavyException{
+    private void setRoute() throws ItemTooHeavyException {
         /** Pop the item from the StorageUnit */
         deliveryItem = tube.pop();
         if (!strong && deliveryItem.getWeight() > 2000) throw new ItemTooHeavyException();
@@ -145,17 +148,50 @@ public class Robot {
     
     /**
      * Prints out the change in state
-     * @param nextState the state to which the robot is transitioning
+     * @param newState the state to which the robot is transitioning
+     * @throws InvalidStateTransitionException if the proposed state transition is invalid.
      */
-    private void changeState(RobotState nextState){
-    	if (current_state != nextState) {
-            System.out.printf("T: %3d > %11s changed from %s to %s%n", Clock.Time(), id, current_state, nextState);
+    private void changeState(RobotState newState) throws InvalidStateTransitionException {
+        checkValidStateTransition(this.current_state, newState);
+
+    	if (current_state != newState) {
+            System.out.printf("T: %3d > %11s changed from %s to %s%n", Clock.Time(), id, current_state, newState);
     	}
-    	current_state = nextState;
-    	if(nextState == RobotState.DELIVERING){
+
+    	current_state = newState;
+
+    	if (newState == RobotState.DELIVERING) {
             System.out.printf("T: %3d > %11s-> [%s]%n", Clock.Time(), id, deliveryItem.toString());
     	}
     }
-    
 
+    /**
+     * Checks if the given before-state and after-state are valid.
+     * @param currentState The current state.
+     * @param newState The new state that is trying to be transitioned into.
+     * @throws InvalidStateTransitionException if the proposed state transition is invalid.
+     */
+    private void checkValidStateTransition(RobotState currentState, RobotState newState)
+            throws InvalidStateTransitionException {
+        // This is essentially like not changing states at all, so just return.
+        if (currentState == newState) {
+            return;
+        }
+
+        if (newState == RobotState.DELIVERING) {
+            if (currentState != RobotState.WAITING) {
+                throw new InvalidStateTransitionException(currentState, newState);
+            }
+
+        } else if (newState == RobotState.RETURNING) {
+            if (currentState != RobotState.DELIVERING) {
+                throw new InvalidStateTransitionException(currentState, newState);
+            }
+
+        } else if (newState == RobotState.WAITING) {
+            if (currentState != RobotState.RETURNING) {
+                throw new InvalidStateTransitionException(currentState, newState);
+            }
+        }
+    }
 }
