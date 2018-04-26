@@ -16,7 +16,7 @@ public class Simulation {
     /** Constant for the mail generator */
     private static final int MAIL_TO_CREATE = 180;
   
-    private static ArrayList<MailItem> mailDelivered;
+    private static ArrayList<MailItem> mailDelivered = new ArrayList<>();
     private static double totalScore = 0;
 
     public static void main(String[] args) { //throws IOException {
@@ -47,14 +47,15 @@ public class Simulation {
             seed = Integer.parseInt(args[0]);
         }
       
-        Automail automail = new Automail(new ReportDelivery());
+        Automail automail = new Automail();
 
-        MailGenerator generator = new MailGenerator(MAIL_TO_CREATE, automail.mailPool, seed);
+        // TODO: Replace the 300 (should be replaced with Properties.get____() that Sam is working on).
+        MailGenerator generator = new MailGenerator(MAIL_TO_CREATE, 300, automail.mailPool, seed);
         
         /** Initiate all the mail */
         generator.generateAllMail();
         MailItem priority;
-        while(MAIL_DELIVERED.size() != generator.MAIL_TO_CREATE) {
+        while(mailDelivered.size() != generator.MAIL_TO_CREATE) {
         	//System.out.println("-- Step: "+Clock.Time());
             priority = generator.step();
             if (priority != null) {
@@ -79,11 +80,11 @@ public class Simulation {
      * @param deliveryItem The MailItem that was delivered.
      */
     public static void reportDelivery(MailItem deliveryItem) {
-        if (!MAIL_DELIVERED.contains(deliveryItem)) {
+        if (!mailDelivered.contains(deliveryItem)) {
             System.out.printf("T: %3d > Delivered     [%s]%n", Clock.Time(), deliveryItem.toString());
-            MAIL_DELIVERED.add(deliveryItem);
+            mailDelivered.add(deliveryItem);
             // Calculate delivery score
-            total_score += calculateDeliveryScore(deliveryItem);
+            totalScore += calculateDeliveryScore(deliveryItem);
 
         } else {
             try {
@@ -97,7 +98,7 @@ public class Simulation {
     public static void printResults() {
         System.out.println("T: "+Clock.Time()+" | Simulation complete!");
         System.out.println("Final Delivery time: " + Clock.Time());
-        System.out.printf("Final Score: %.2f%n", total_score);
+        System.out.printf("Final Score: %.2f%n", totalScore);
     }
 
     private static double calculateDeliveryScore(MailItem deliveryItem) {
@@ -106,11 +107,5 @@ public class Simulation {
     	double priority_weight = deliveryItem.getPriorityLevel();
         // Take (delivery time - arrivalTime)**penalty * (1+sqrt(priority_weight))
         return Math.pow(Clock.Time() - deliveryItem.getArrivalTime(),penalty)*(1+Math.sqrt(priority_weight));
-    }
-  
-    public static void printResults(){
-        System.out.println("T: "+Clock.Time()+" | Simulation complete!");
-        System.out.println("Final Delivery time: "+Clock.Time());
-        System.out.printf("Final Score: %.2f%n", totalScore);
     }
 }

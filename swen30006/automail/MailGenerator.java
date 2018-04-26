@@ -28,7 +28,7 @@ public class MailGenerator {
      * @param mailPool where mail items go on arrival
      * @param seed random seed for generating mail
      */
-    public MailGenerator(int mailToCreate, IMailPool mailPool, Integer seed){
+    public MailGenerator(int mailToCreate, int lastDeliveryTime, IMailPool mailPool, Integer seed){
         if (seed != null) {
         	this.random = new Random(seed);
         } else {
