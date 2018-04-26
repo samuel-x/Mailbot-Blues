@@ -1,7 +1,5 @@
 package automail;
 
-// import java.util.UUID;
-
 /**
  * Represents a mail item
  */
@@ -24,7 +22,7 @@ public class MailItem {
      * @param arrivalTime the time that the mail arrived
      * @param weight the weight of this mail item
      */
-    public MailItem(int destinationFloor, int arrivalTime, int weight, int priorityLevel){
+    public MailItem (int destinationFloor, int arrivalTime, int weight, int priorityLevel) {
         this.destinationFloor = destinationFloor;
         this.id = String.valueOf(hashCode());
         this.arrivalTime = arrivalTime;
@@ -33,7 +31,7 @@ public class MailItem {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         String output = String.format("Mail Item:: ID: %11s | Arrival: %4d | Destination: %2d | Weight: %4d",
                 id, arrivalTime, destinationFloor, weight );
 
@@ -53,7 +51,6 @@ public class MailItem {
     }
     
     /**
-     *
      * @return the ID of the mail item
      */
     public String getId() {
@@ -64,7 +61,7 @@ public class MailItem {
      *
      * @return the arrival time of the mail item
      */
-    public int getArrivalTime(){
+    public int getArrivalTime() {
         return arrivalTime;
     }
 
@@ -72,7 +69,7 @@ public class MailItem {
     *
     * @return the weight of the mail item
     */
-    public int getWeight(){
+    public int getWeight() {
         return weight;
     }
 

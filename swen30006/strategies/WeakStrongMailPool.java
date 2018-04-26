@@ -8,15 +8,12 @@ import automail.StorageTube;
 import exceptions.TubeFullException;
 
 public class WeakStrongMailPool implements IMailPool{
-	private LinkedList<MailItem> upper;  // weak robot will take this set
-	private LinkedList<MailItem> lower;  // strong robot will take this set
-	private int divider;
+	private LinkedList<MailItem> upper = new LinkedList<>();  // weak robot will take this set
+	private LinkedList<MailItem> lower = new LinkedList<>();  // strong robot will take this set
+	private final int divider;
 	private static final int MAX_WEIGHT = 2000;
 
 	public WeakStrongMailPool(){
-		// Start empty
-		upper = new LinkedList<MailItem>();
-		lower = new LinkedList<MailItem>();
 		divider = Building.FLOORS / 2;  // Top normal floor for strong robot
 	}
 
@@ -51,8 +48,9 @@ public class WeakStrongMailPool implements IMailPool{
 	public void fillStorageTube(StorageTube tube, boolean strong) {
 		Queue<MailItem> q = strong ? lower : upper;
 		try{
-			while(!tube.isFull() && !q.isEmpty()) {
-				tube.addItem(q.remove());  // Could group/order by floor taking priority into account - but already better than simple
+			while (!tube.isFull() && !q.isEmpty()) {
+				// Could group/order by floor taking priority into account - but already better than simple
+				tube.addItem(q.remove());
 			}
 		}
 		catch(TubeFullException e){

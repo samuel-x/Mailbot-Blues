@@ -18,31 +18,12 @@ public class Simulation {
     private static ArrayList<MailItem> mailDelivered = new ArrayList<>();
     private static double totalScore = 0;
 
-    public static void main(String[] args) { //throws IOException {
- /*   	// Should probably be using properties here
-    	Properties automailProperties = new Properties();
-		// Defaults
-		automailProperties.setProperty("Name_of_Property", "20");  // Property value may need to be converted from a string to the appropriate type
-
-		FileReader inStream = null;
-		
-		try {
-			inStream = new FileReader("automail.properties");
-			automailProperties.load(inStream);
-		} finally {
-			 if (inStream != null) {
-	                inStream.close();
-	            }
-		}
-		
-		int i = Integer.parseInt(automailProperties.getProperty("Name_of_Property"));
-*/
-
+    public static void main(String[] args) {
         // Initialize the seed used for the random number generator.
         Integer seed = null;
-        
-        /** Read the first argument and save it as a seed if it exists */
-        if(args.length != 0) {
+
+        // Read the first argument and save it as a seed if it exists
+        if (args.length != 0) {
             seed = Integer.parseInt(args[0]);
         }
       
@@ -50,18 +31,19 @@ public class Simulation {
 
         // TODO: Replace the 300 (should be replaced with Properties.get____() that Sam is working on).
         MailGenerator generator = new MailGenerator(MAIL_TO_CREATE, 300, seed);
-        
-        /** Initiate all the mail */
+
+        // Initiate all the mail
         generator.generateAllMail();
         MailItem priorityMail;
-        while(mailDelivered.size() != generator.MAIL_TO_CREATE) {
-        	//System.out.println("-- Step: "+Clock.Time());
+        while (mailDelivered.size() != generator.MAIL_TO_CREATE) {
             generator.addMailToPool(automail.mailPool, Clock.Time());
             priorityMail = generator.getPriorityMailAtTime(Clock.Time());
+
             if (priorityMail != null) {
             	automail.robot1.behaviour.priorityArrival(priorityMail.getPriorityLevel(), priorityMail.getWeight());
             	automail.robot2.behaviour.priorityArrival(priorityMail.getPriorityLevel(), priorityMail.getWeight());
             }
+
             try {
 				automail.robot1.step();
 				automail.robot2.step();
@@ -70,8 +52,10 @@ public class Simulation {
 				System.out.println("Simulation unable to complete.");
 				System.exit(0);
 			}
+
             Clock.Tick();
         }
+
         printResults();
     }
 

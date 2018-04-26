@@ -5,7 +5,7 @@ import automail.StorageTube;
 
 public class MyRobotBehaviour implements IRobotBehaviour {
 	
-	private boolean strong;
+	private final boolean strong;
 	private int newPriority; // Used if we are notified that a priority item has arrived. 
 		
 	public MyRobotBehaviour(boolean strong) {
@@ -19,10 +19,13 @@ public class MyRobotBehaviour implements IRobotBehaviour {
 	
 	@Override
     public void priorityArrival(int priority, int weight) {
-    	if (priority > newPriority) newPriority = priority;  // Only the strong robot will reportDelivery priority items so weight of no interest
+		// Only the strong robot will deliver priority items so weight of no interest
+    	if (priority > newPriority) {
+    		newPriority = priority;
+		}
     }
  
-	private int tubePriority(StorageTube tube) {  // Assumes at least one item in tube
+	private int tubePriority(StorageTube tube) {  // Assumes at least one item in tube TODO: Why Peter?
 		MailItem item = tube.peek();
 		return item.getPriorityLevel();
 	}
