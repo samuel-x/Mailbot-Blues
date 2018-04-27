@@ -36,11 +36,7 @@ public class StorageTube {
      * @return the first item in the storage tube (without removing it)
      */
     public MailItem peek() {
-<<<<<<< HEAD
-        return tube.peek();
-=======
-    	return this.tube.peek();
->>>>>>> 5e6819ee0e72a3bee46a7701c742777d6bf0163a
+        return this.tube.peek();
     }
 
     /**
@@ -49,32 +45,20 @@ public class StorageTube {
      * @throws TubeFullException thrown if an item is added which exceeds the capacity
      */
     public void addItem(MailItem item) throws TubeFullException {
-<<<<<<< HEAD
-        if(tube.size() < MAXIMUM_CAPACITY){
-            tube.add(item);
-=======
-        if(this.tube.size() < this.MAXIMUM_CAPACITY){
+        if (this.tube.size() < this.MAXIMUM_CAPACITY) {
             this.tube.add(item);
->>>>>>> 5e6819ee0e72a3bee46a7701c742777d6bf0163a
         } else {
             throw new TubeFullException();
         }
     }
 
-<<<<<<< HEAD
     /** @return the size of the tube **/
     public int getSize(){
-        return tube.size();
-=======
-    /** @return the size of the tube */
-    public int getSize() {
-    	return this.tube.size();
->>>>>>> 5e6819ee0e72a3bee46a7701c742777d6bf0163a
+        return this.tube.size();
     }
     
     /** @return the first item in the storage tube (after removing it) */
     public MailItem pop() {
         return this.tube.pop();
     }
-
 }

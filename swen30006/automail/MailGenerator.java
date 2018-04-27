@@ -52,26 +52,15 @@ public class MailGenerator {
         int priorityLevel = generatePriorityLevel();
         int arrivalTime = generateArrivalTime();
         int weight = generateWeight();
+
         // Check if arrival time has a priority mail
-<<<<<<< HEAD
-        if(    (random.nextInt(6) > 0) ||  // Skew towards non priority mail
-            (allMail.containsKey(arrival_time) &&
-            allMail.get(arrival_time).stream().anyMatch(MailItem::hasPriority)))
+        if ((this.random.nextInt(6) > 0) ||  // Skew towards non priority mail
+                (this.allMail.containsKey(arrivalTime) &&
+                        this.allMail.get(arrivalTime).stream().anyMatch(MailItem::hasPriority)))
         {
-            return new MailItem(dest_floor, arrival_time, weight, 0);
-
+            return new MailItem(destinationFloor, arrivalTime, weight, 0);
         } else {
-            return new MailItem(dest_floor, arrival_time, weight, priority_level);
-=======
-        if(	(this.random.nextInt(6) > 0) ||  // Skew towards non priority mail
-        	(this.allMail.containsKey(arrivalTime) &&
-                    this.allMail.get(arrivalTime).stream().anyMatch(MailItem::hasPriority)))
-        {
-        	return new MailItem(destinationFloor, arrivalTime, weight, 0);
-
-        } else {
-        	return new MailItem(destinationFloor, arrivalTime, weight, priorityLevel);
->>>>>>> 5e6819ee0e72a3bee46a7701c742777d6bf0163a
+            return new MailItem(destinationFloor, arrivalTime, weight, priorityLevel);
         }   
     }
 
@@ -92,21 +81,12 @@ public class MailGenerator {
     /**
      * @return a random weight
      */
-<<<<<<< HEAD
     private int generateWeight(){
         final double mean = 200.0; // grams for normal item
         final double stddev = 700.0; // grams
-        double base = random.nextGaussian();
+        double base = this.random.nextGaussian();
         if (base < 0) base = -base;
         int weight = (int) (mean + base * stddev);
-=======
-    private int generateWeight() {
-    	final double mean = 200.0; // grams for normal item
-    	final double stddev = 700.0; // grams
-    	double base = this.random.nextGaussian();
-    	if (base < 0) base = -base;
-    	int weight = (int) (mean + base * stddev);
->>>>>>> 5e6819ee0e72a3bee46a7701c742777d6bf0163a
         return weight > 5000 ? 5000 : weight;
     }
     
@@ -150,21 +130,10 @@ public class MailGenerator {
      * @param mailPool The mail pool to add mail to.
      * @param timeStamp The time stamp from which mail is added.
      */
-<<<<<<< HEAD
-    public MailItem step() {
-        MailItem priority = null;
-        // Check if there are any mail to create
-        if (this.allMail.containsKey(Clock.Time())) {
-            for (MailItem mailItem : allMail.get(Clock.Time())) {
-                if (mailItem.hasPriority()) {
-                    priority = mailItem;
-                }
-=======
     public void addMailToPool(IMailPool mailPool, int timeStamp) {
-    	// Check if there are any mail to add.
+        // Check if there are any mail to add.
         if (this.allMail.containsKey(timeStamp)) {
             for (MailItem mailItem : this.allMail.get(timeStamp)) {
->>>>>>> 5e6819ee0e72a3bee46a7701c742777d6bf0163a
                 System.out.printf("T: %3d > new addToPool [%s]%n", Clock.Time(), mailItem.toString());
                 mailPool.addToPool(mailItem);
             }

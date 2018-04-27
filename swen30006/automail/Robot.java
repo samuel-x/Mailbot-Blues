@@ -32,7 +32,7 @@ public class Robot {
      * @param strong is whether the robot can carry heavy items
      */
     public Robot(IRobotBehaviour behaviour, IMailPool mailPool, boolean strong) {
-        id = "R" + hashCode();
+        this.id = "R" + hashCode();
         // currentState = RobotState.WAITING;
         this.currentState = RobotState.RETURNING;
         this.currentFloor = Building.MAILROOM_LOCATION;
@@ -57,7 +57,6 @@ public class Robot {
                 if (this.currentFloor == Building.MAILROOM_LOCATION) {
                     while (!this.tube.isEmpty()) {
                         MailItem mailItem = this.tube.pop();
-                        mailPool.addToPool(mailItem);
                         this.mailPool.addToPool(mailItem);
                         System.out.printf("T: %3d > old addToPool [%s]%n", Clock.Time(), mailItem.toString());
                     }
@@ -67,7 +66,7 @@ public class Robot {
                     moveTowards(Building.MAILROOM_LOCATION);
                     break;
                 }
-<<<<<<< HEAD
+
             case WAITING:
                 // Tell the sorter the robot is ready
                 this.mailPool.fillStorageTube(this.tube, this.strong);
@@ -94,16 +93,13 @@ public class Robot {
                     // Check if want to return or if there are more items in the tube
                     if (wantToReturn || this.tube.isEmpty()) {
                     // if(tube.isEmpty()){
-<<<<<<< HEAD
                         changeState(RobotState.RETURNING);
-                    }
-                    else{
+                    } else {
                         /** If there are more items, set the robot's route to the location to deliver the item */
                         setRoute();
                         changeState(RobotState.DELIVERING);
                     }
-                } else
-                {/*
+                } else {/*
                     if(wantToReturn){
                         // Put the item we are trying to deliver back
                         try {
@@ -114,38 +110,12 @@ public class Robot {
                         changeState(RobotState.RETURNING);
                     }
                     else{*/
-                        /** The robot is not at the destination yet, move towards it! */
-                            moveTowards(destinationFloor);
+                    // The robot is not at the destination yet, move towards it!
+                        moveTowards(this.destinationFloor);
                     /*
                     }
                     */
                 }
-=======
-                    	changeState(RobotState.RETURNING);
-
-                    } else {
-                        // If there are more items, set the robot's route to the location to deliver the item
-                        setRoute();
-                        changeState(RobotState.DELIVERING);
-                    }
-    			} else {/*
-	    			if(wantToReturn){
-	    				// Put the item we are trying to deliver back
-	    				try {
-							tube.addItem(deliveryItem);
-						} catch (TubeFullException e) {
-							e.printStackTrace();
-						}
-	    				changeState(RobotState.RETURNING);
-	    			}
-	    			else{*/
-                    // The robot is not at the destination yet, move towards it!
-                    moveTowards(this.destinationFloor);
-	                /*
-	    			}
-	    			*/
-    			}
->>>>>>> 5e6819ee0e72a3bee46a7701c742777d6bf0163a
                 break;
         }
     }
@@ -154,13 +124,6 @@ public class Robot {
      * Sets the route for the robot
      */
     private void setRoute() throws ItemTooHeavyException {
-<<<<<<< HEAD
-        /** Pop the item from the StorageUnit */
-        deliveryItem = tube.pop();
-        if (!strong && deliveryItem.getWeight() > 2000) throw new ItemTooHeavyException();
-        /** Set the destination floor */
-        destinationFloor = deliveryItem.getDestFloor();
-=======
         // Pop the item from the StorageUnit
         this.deliveryItem = this.tube.pop();
         if (!this.strong && this.deliveryItem.getWeight() > 2000) {
@@ -168,7 +131,6 @@ public class Robot {
         }
         // Set the destination floor
         this.destinationFloor = this.deliveryItem.getDestFloor();
->>>>>>> 5e6819ee0e72a3bee46a7701c742777d6bf0163a
     }
 
     /**
@@ -188,31 +150,19 @@ public class Robot {
      * @param newState the state to which the robot is transitioning
      * @throws InvalidStateTransitionException if the proposed state transition is invalid.
      */
-<<<<<<< HEAD
     private void changeState(RobotState newState) throws InvalidStateTransitionException {
         checkValidStateTransition(this.currentState, newState);
 
-        if (currentState != newState) {
-            System.out.printf("T: %3d > %11s changed from %s to %s%n", Clock.Time(), id, currentState, newState);
+        if (this.currentState != newState) {
+            System.out.printf("T: %3d > %11s changed from %s to %s%n",
+                    Clock.Time(), this.id, this.currentState, newState);
         }
 
-        currentState = newState;
+        this.currentState = newState;
 
         if (newState == RobotState.DELIVERING) {
-            System.out.printf("T: %3d > %11s-> [%s]%n", Clock.Time(), id, deliveryItem.toString());
-        }
-=======
-    private void changeState(RobotState nextState) {
-    	if (this.currentState != nextState) {
-            System.out.printf("T: %3d > %11s changed from %s to %s%n",
-                    Clock.Time(), this.id, this.currentState, nextState);
-    	}
-
-        this.currentState = nextState;
-    	if (nextState == RobotState.DELIVERING) {
             System.out.printf("T: %3d > %11s-> [%s]%n", Clock.Time(), this.id, this.deliveryItem.toString());
-    	}
->>>>>>> 5e6819ee0e72a3bee46a7701c742777d6bf0163a
+        }
     }
 
     /**
@@ -233,21 +183,18 @@ public class Robot {
                 if (currentState != RobotState.WAITING) {
                     throw new InvalidStateTransitionException(currentState, newState);
                 }
-
                 break;
 
             case RETURNING:
                 if (currentState != RobotState.DELIVERING) {
                     throw new InvalidStateTransitionException(currentState, newState);
                 }
-
                 break;
 
             case WAITING:
                 if (currentState != RobotState.RETURNING) {
                     throw new InvalidStateTransitionException(currentState, newState);
                 }
-
                 break;
         }
     }

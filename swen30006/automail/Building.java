@@ -1,15 +1,7 @@
 package automail;
 
 public class Building {
-<<<<<<< HEAD
-
-
-    /** The number of floors in the building **/
-=======
-	
-	
     /** The number of floors in the building */
->>>>>>> 5e6819ee0e72a3bee46a7701c742777d6bf0163a
     public static final int FLOORS = 14;
     
     /** Represents the ground floor location */
@@ -17,5 +9,4 @@ public class Building {
     
     /** Represents the mailroom location */
     public static final int MAILROOM_LOCATION = 1;
-
 }
