@@ -1,6 +1,5 @@
 package automail;
 
-// import exceptions.RobotNotInMailRoomException;
 import exceptions.TubeFullException;
 
 import java.util.Stack;
@@ -11,34 +10,37 @@ import java.util.Stack;
 public class StorageTube {
 
     public final int MAXIMUM_CAPACITY = 4;
-    public Stack<MailItem> tube;
+    public Stack<MailItem> tube = new Stack<>();
 
     /**
      * Constructor for the storage tube
      */
     public StorageTube(){
-        this.tube = new Stack<MailItem>();
     }
 
     /**
      * @return if the storage tube is full
      */
     public boolean isFull(){
-        return tube.size() == MAXIMUM_CAPACITY;
+        return this.tube.size() == this.MAXIMUM_CAPACITY;
     }
 
     /**
      * @return if the storage tube is empty
      */
     public boolean isEmpty(){
-        return tube.isEmpty();
+        return this.tube.isEmpty();
     }
     
     /**
      * @return the first item in the storage tube (without removing it)
      */
     public MailItem peek() {
+<<<<<<< HEAD
         return tube.peek();
+=======
+    	return this.tube.peek();
+>>>>>>> 5e6819ee0e72a3bee46a7701c742777d6bf0163a
     }
 
     /**
@@ -47,23 +49,32 @@ public class StorageTube {
      * @throws TubeFullException thrown if an item is added which exceeds the capacity
      */
     public void addItem(MailItem item) throws TubeFullException {
+<<<<<<< HEAD
         if(tube.size() < MAXIMUM_CAPACITY){
             tube.add(item);
+=======
+        if(this.tube.size() < this.MAXIMUM_CAPACITY){
+            this.tube.add(item);
+>>>>>>> 5e6819ee0e72a3bee46a7701c742777d6bf0163a
         } else {
             throw new TubeFullException();
         }
     }
 
+<<<<<<< HEAD
     /** @return the size of the tube **/
     public int getSize(){
         return tube.size();
+=======
+    /** @return the size of the tube */
+    public int getSize() {
+    	return this.tube.size();
+>>>>>>> 5e6819ee0e72a3bee46a7701c742777d6bf0163a
     }
     
-    /** 
-     * @return the first item in the storage tube (after removing it)
-     */
-    public MailItem pop(){
-        return tube.pop();
+    /** @return the first item in the storage tube (after removing it) */
+    public MailItem pop() {
+        return this.tube.pop();
     }
 
 }

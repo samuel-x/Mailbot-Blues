@@ -19,16 +19,14 @@ public class MailGenerator {
 
     private int mailCreated;
     private boolean complete;
-    private IMailPool mailPool;
     private HashMap<Integer, ArrayList<MailItem>> allMail = new HashMap<>();
 
     /**
      * Constructor for mail generation
      * @param mailToCreate roughly how many mail items to create
-     * @param mailPool where mail items go on arrival
      * @param seed random seed for generating mail
      */
-    public MailGenerator(int mailToCreate, int lastDeliveryTime, IMailPool mailPool, Integer seed){
+    public MailGenerator(int mailToCreate, int lastDeliveryTime, Integer seed) {
         if (seed != null) {
             this.random = new Random(seed);
         } else {
@@ -40,22 +38,22 @@ public class MailGenerator {
 
         this.mailCreated = 0;
         this.complete = false;
-        this.mailPool = mailPool;
     }
 
     /**
      * @return a new mail item that needs to be delivered
      */
-    private MailItem generateMail(){
-        int dest_floor = generateDestinationFloor();
+    private MailItem generateMail() {
+        int destinationFloor = generateDestinationFloor();
         // Cannot move this line down into the below 'else' block, which would result in only generating priority levels
         // when a priority mail item has been generated. This is because it would result in fewer generations of
         // priority levels, affecting the random number generator, changing final output of the program, which is not
         // allowed.
-        int priority_level = generatePriorityLevel();
-        int arrival_time = generateArrivalTime();
+        int priorityLevel = generatePriorityLevel();
+        int arrivalTime = generateArrivalTime();
         int weight = generateWeight();
         // Check if arrival time has a priority mail
+<<<<<<< HEAD
         if(    (random.nextInt(6) > 0) ||  // Skew towards non priority mail
             (allMail.containsKey(arrival_time) &&
             allMail.get(arrival_time).stream().anyMatch(MailItem::hasPriority)))
@@ -64,85 +62,95 @@ public class MailGenerator {
 
         } else {
             return new MailItem(dest_floor, arrival_time, weight, priority_level);
+=======
+        if(	(this.random.nextInt(6) > 0) ||  // Skew towards non priority mail
+        	(this.allMail.containsKey(arrivalTime) &&
+                    this.allMail.get(arrivalTime).stream().anyMatch(MailItem::hasPriority)))
+        {
+        	return new MailItem(destinationFloor, arrivalTime, weight, 0);
+
+        } else {
+        	return new MailItem(destinationFloor, arrivalTime, weight, priorityLevel);
+>>>>>>> 5e6819ee0e72a3bee46a7701c742777d6bf0163a
         }   
     }
 
     /**
      * @return a destination floor between the ranges of GROUND_FLOOR to FLOOR
      */
-    private int generateDestinationFloor(){
-        return Building.LOWEST_FLOOR + random.nextInt(Building.FLOORS);
+    private int generateDestinationFloor() {
+        return Building.LOWEST_FLOOR + this.random.nextInt(Building.FLOORS);
     }
 
     /**
      * @return a random priority level selected from 10 and 100
      */
-    private int generatePriorityLevel(){
-        return random.nextInt(4) > 0 ? 10 : 100;
+    private int generatePriorityLevel() {
+        return this.random.nextInt(4) > 0 ? 10 : 100;
     }
     
     /**
      * @return a random weight
      */
+<<<<<<< HEAD
     private int generateWeight(){
         final double mean = 200.0; // grams for normal item
         final double stddev = 700.0; // grams
         double base = random.nextGaussian();
         if (base < 0) base = -base;
         int weight = (int) (mean + base * stddev);
+=======
+    private int generateWeight() {
+    	final double mean = 200.0; // grams for normal item
+    	final double stddev = 700.0; // grams
+    	double base = this.random.nextGaussian();
+    	if (base < 0) base = -base;
+    	int weight = (int) (mean + base * stddev);
+>>>>>>> 5e6819ee0e72a3bee46a7701c742777d6bf0163a
         return weight > 5000 ? 5000 : weight;
     }
     
     /**
      * @return a random arrival time before the last delivery time
      */
-    private int generateArrivalTime(){
-        return 1 + random.nextInt(this.LAST_DELIVERY_TIME);
-    }
-
-    /**
-     * Returns a random element from an array
-     * @param array of objects
-     */
-    private Object getRandom(Object[] array){
-        return array[random.nextInt(array.length)];
+    private int generateArrivalTime() {
+        return 1 + this.random.nextInt(this.LAST_DELIVERY_TIME);
     }
 
     /**
      * This class initializes all mail and sets their corresponding values,
      */
-    public void generateAllMail(){
-        while(!complete){
+    public void generateAllMail() {
+        while (!this.complete) {
             MailItem newMail =  generateMail();
             int timeToDeliver = newMail.getArrivalTime();
-            /** Check if key exists for this time **/
-            if(allMail.containsKey(timeToDeliver)){
-                /** Add to existing array */
-                allMail.get(timeToDeliver).add(newMail);
-            }
-            else{
-                /** If the key doesn't exist then set a new key along with the array of MailItems to add during
-                 * that time step.
-                 */
+            // Check if key exists for this time
+            if (this.allMail.containsKey(timeToDeliver)) {
+                // Add to existing array
+                this.allMail.get(timeToDeliver).add(newMail);
+            } else {
+                // If the key doesn't exist then set a new key along with the array of MailItems to add during
+                // that time step.
                 ArrayList<MailItem> newMailList = new ArrayList<>();
                 newMailList.add(newMail);
-                allMail.put(timeToDeliver,newMailList);
+                this.allMail.put(timeToDeliver, newMailList);
             }
-            /** Mark the mail as created */
-            mailCreated++;
+            // Mark the mail as created
+            this.mailCreated++;
 
-            /** Once we have satisfied the amount of mail to create, we're done!*/
-            if(mailCreated == MAIL_TO_CREATE){
-                complete = true;
+            // Once we have satisfied the amount of mail to create, we're done!
+            if (this.mailCreated == this.MAIL_TO_CREATE) {
+                this.complete = true;
             }
         }
-
     }
-    
+
     /**
-     * While there are steps left, create a new mail item to deliver
-     * @return Priority
+     * Adds all mail from the given time to the given mail pool.
+     * @param mailPool The mail pool to add mail to.
+     * @param timeStamp The time stamp from which mail is added.
      */
+<<<<<<< HEAD
     public MailItem step() {
         MailItem priority = null;
         // Check if there are any mail to create
@@ -151,12 +159,26 @@ public class MailGenerator {
                 if (mailItem.hasPriority()) {
                     priority = mailItem;
                 }
+=======
+    public void addMailToPool(IMailPool mailPool, int timeStamp) {
+    	// Check if there are any mail to add.
+        if (this.allMail.containsKey(timeStamp)) {
+            for (MailItem mailItem : this.allMail.get(timeStamp)) {
+>>>>>>> 5e6819ee0e72a3bee46a7701c742777d6bf0163a
                 System.out.printf("T: %3d > new addToPool [%s]%n", Clock.Time(), mailItem.toString());
                 mailPool.addToPool(mailItem);
             }
         }
-
-        return priority;
     }
-    
+
+    /**
+     * Get the priority mail item at the given time, if present.
+     * @param timeStamp The time stamp that's being checking for priority mail.
+     * @return The mail item if present. Otherwise, returns null.
+     */
+    public MailItem getPriorityMailAtTime(int timeStamp) {
+        ArrayList<MailItem> items = this.allMail.get(timeStamp);
+
+        return items == null ? null : items.stream().filter(MailItem::hasPriority).findFirst().orElse(null);
+    }
 }

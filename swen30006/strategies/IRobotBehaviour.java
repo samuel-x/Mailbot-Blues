@@ -3,6 +3,7 @@ package strategies;
 import automail.StorageTube;
 
 public interface IRobotBehaviour {
+<<<<<<< HEAD
 
     /**
      * startDelivery() provides the robot the opportunity to initialise state
@@ -19,6 +20,24 @@ public interface IRobotBehaviour {
      * if circumstances make this desirable.
      */
     public boolean returnToMailRoom(StorageTube tube);
+=======
+	
+	/**
+	 * startDelivery() provides the robot the opportunity to initialise state
+	 * in support of the other methods below. 
+	 */
+
+	void startDelivery();
+	
+	/** 
+	 * @param tube refers to the pack the robot uses to deliver mail.
+	 * @return When this is true, the robot is returned to the mail room.
+	 * The robot will always return to the mail room when the tube is empty.
+	 * This method allows the robot to return with items still in the tube,
+	 * if circumstances make this desirable.
+	 */
+    boolean returnToMailRoom(StorageTube tube);
+>>>>>>> 5e6819ee0e72a3bee46a7701c742777d6bf0163a
     
     /**
      * @param priority is that of the priority mail item which just arrived.
@@ -26,6 +45,6 @@ public interface IRobotBehaviour {
      * The automail system broadcasts this information to all robots
      * when a new priority mail items arrives at the building.
      */
-    public void priorityArrival(int priority, int weight);
+    void priorityArrival(int priority, int weight);
     
 }
