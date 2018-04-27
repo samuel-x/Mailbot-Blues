@@ -6,10 +6,12 @@ import automail.StorageTube;
 public class MyRobotBehaviour implements IRobotBehaviour {
 	
 	private boolean strong;
+	private int tubeCapacity;
 	private int newPriority; // Used if we are notified that a priority item has arrived. 
 		
-	public MyRobotBehaviour(boolean strong) {
+	public MyRobotBehaviour(boolean strong, int tubeCapacity) {
 		this.strong = strong;
+		this.tubeCapacity = tubeCapacity;
 		newPriority = 0;
 	}
 	

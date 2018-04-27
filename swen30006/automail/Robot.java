@@ -8,7 +8,7 @@ import strategies.IRobotBehaviour;
 /**
  * The robot delivers mail!
  */
-public class Robot {
+public abstract class Robot {
 
 	StorageTube tube;
     IRobotBehaviour behaviour;
@@ -38,7 +38,8 @@ public class Robot {
         // current_state = RobotState.WAITING;
     	current_state = RobotState.RETURNING;
         current_floor = Building.MAILROOM_LOCATION;
-        tube = new StorageTube();
+        //tube = new StorageTube();
+        this.tube = null;
         this.behaviour = behaviour;
         this.mailPool = mailPool;
         this.strong = strong;

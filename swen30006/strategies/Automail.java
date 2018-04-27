@@ -1,6 +1,9 @@
 package strategies;
 
+import automail.BigRobot;
 import automail.Robot;
+import automail.StrongRobot;
+import automail.WeakRobot;
 
 public class Automail {
 	      
@@ -16,8 +19,8 @@ public class Automail {
     	mailPool = new WeakStrongMailPool();
     	
         /** Initialize the RobotAction */
-    	boolean weak = false;  // Can't handle more than 2000 grams
-    	boolean strong = true; // Can handle any weight that arrives at the building
+    	//boolean weak = false;  // Can't handle more than 2000 grams
+    	//boolean strong = true; // Can handle any weight that arrives at the building
     	
     	//// Swap the next two lines for the two below those
     	//IRobotBehaviour robotBehaviourW = new MyRobotBehaviour(weak);
@@ -34,19 +37,22 @@ public class Automail {
     private Robot makeRobot(String type) {
     	IRobotBehaviour tempBehaviour = null;
     	boolean strong = false;
+    	Robot robot = null;
     	if (type.equals("weak")) {
     		strong = false;
-    		tempBehaviour = new MyRobotBehaviour(strong);
+    		tempBehaviour = new MyRobotBehaviour(strong, WeakRobot.TUBE_CAPACITY);
+    		robot = new WeakRobot(tempBehaviour, mailPool, strong);
     	}
     	if (type.equals("strong")) {
     		strong = true;
-    		tempBehaviour = new MyRobotBehaviour(strong);
+    		tempBehaviour = new MyRobotBehaviour(strong, StrongRobot.TUBE_CAPACITY);
+    		robot = new StrongRobot(tempBehaviour, mailPool, strong);
     	}
     	if (type.equals("big")) {
-    		System.out.println("gotta do big robot type");
+    		strong = true;
+    		tempBehaviour = new MyRobotBehaviour(strong, BigRobot.TUBE_CAPACITY);
+    		robot = new BigRobot(tempBehaviour, mailPool, strong);
     	}
-    	
-    	Robot robot = new Robot(tempBehaviour, mailPool, strong);
     	return robot;
     }
     
