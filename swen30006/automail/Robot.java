@@ -68,7 +68,7 @@ public class Robot {
                 }
     		case WAITING:
     			/** Tell the sorter the robot is ready */
-    			mailPool.fillStorageTube(storage, strong);
+    			mailPool.fillStorage(storage, strong);
                 // System.out.println("Tube total size: "+tube.getTotalOfSizes());
                 /** If the StorageTube is ready and the Robot is waiting in the mailroom then start the delivery */
                 if(!storage.isEmpty()){

@@ -9,19 +9,19 @@ import java.util.stream.Stream;
  * This class represents the input properties of the simulation
  */
 public class Properties {
-        private static int seed;
-        private static int maxFloor;
-        private static float deliveryPenalty;
-        private static int lastDeliveryTime;
-        private static int mailToCreate;
-        private static String robotType1;
-        private static String robotType2;
+        private int seed;
+        private int maxFloor;
+        private float deliveryPenalty;
+        private int lastDeliveryTime;
+        private int mailToCreate;
+        private String robotType1;
+        private String robotType2;
 
         public Properties(String path) {
             // Use a stream to capture all configuration lines and parse them into values
             try (Stream<String> stream = Files.lines(Paths.get(path))) {
                 stream.filter(line -> !line.startsWith("#"))
-                                .forEach(line -> load(line));
+                                .forEach(this::load);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -34,7 +34,7 @@ public class Properties {
         private void load(String line) {
             if (line.contains("Seed")) {
                 // If we have no seed, return 0
-                if (parseValue(line) == " ") {
+                if (parseValue(line).equals(" ")) {
                     seed = 0;
                 }
                 else {
@@ -63,7 +63,7 @@ public class Properties {
 
         /**
          * This simply returns a string of the value of a variable in the .properties file.
-         * @param line
+         * @param line String containing the parameter to be configured
          * @return
          */
         private String parseValue(String line) {
@@ -71,30 +71,30 @@ public class Properties {
             }
 
         public int getSeed() {
-            return seed;
+            return this.seed;
         }
 
         public int getMaxFloor() {
-            return maxFloor;
+            return this.maxFloor;
         }
 
         public float getDeliveryPenalty() {
-            return deliveryPenalty;
+            return this.deliveryPenalty;
         }
 
         public int getLastDeliveryTime() {
-            return lastDeliveryTime;
+            return this.lastDeliveryTime;
         }
 
         public int getMailToCreate() {
-            return mailToCreate;
+            return this.mailToCreate;
         }
 
         public String getRobotType1() {
-            return robotType1;
+            return this.robotType1;
         }
 
         public String getRobotType2() {
-            return robotType2;
+            return this.robotType2;
         }
 }

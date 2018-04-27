@@ -4,7 +4,7 @@ import java.util.*;
 
 import automail.Building;
 import automail.MailItem;
-import automail.StorageTube;
+import automail.Storage;
 import exceptions.StorageFullException;
 
 public class WeakStrongMailPool implements IMailPool{
@@ -48,11 +48,11 @@ public class WeakStrongMailPool implements IMailPool{
 	}
 	
 	@Override
-	public void fillStorageTube(StorageTube tube, boolean strong) {
+	public void fillStorage(Storage storage, boolean strong) {
 		Queue<MailItem> q = strong ? lower : upper;
 		try{
-			while(!tube.isFull() && !q.isEmpty()) {
-				tube.addItem(q.remove());  // Could group/order by floor taking priority into account - but already better than simple
+			while(!storage.isFull() && !q.isEmpty()) {
+				storage.addItem(q.remove());  // Could group/order by floor taking priority into account - but already better than simple
 			}
 		}
 		catch(StorageFullException e){
