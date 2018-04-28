@@ -1,5 +1,6 @@
 package strategies;
 
+import automail.BuildingSector;
 import automail.MailItem;
 import automail.Storage;
 
@@ -19,8 +20,7 @@ public interface IMailPool {
     
     /**
      * @param storage refers to the pack the robot uses to deliver mail.
-     * @param strong is whether the tube belongs to a strong robot.
+     * @param sector is where the robot serves in the building.
      */
-    void fillStorage(Storage storage, boolean strong);
-    
+    void fillStorage(Storage storage, BuildingSector sector);
 }

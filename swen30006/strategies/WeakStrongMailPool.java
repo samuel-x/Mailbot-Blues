@@ -2,16 +2,14 @@ package strategies;
 
 import java.util.*;
 
-import automail.Building;
-import automail.MailItem;
-import automail.Storage;
+import automail.*;
 import exceptions.StorageFullException;
 
 public class WeakStrongMailPool implements IMailPool{
     private LinkedList<MailItem> upper = new LinkedList<>();  // weak robot will take this set
     private LinkedList<MailItem> lower = new LinkedList<>();  // strong robot will take this set
     private final int divider;
-    private static final int MAX_WEIGHT = 2000;
+    private static final int MAX_WEIGHT = WeakRobot.CARRY_WEIGHT;
 
     public WeakStrongMailPool() {
         this.divider = Building.FLOORS / 2;  // Top normal floor for strong robot
@@ -44,8 +42,8 @@ public class WeakStrongMailPool implements IMailPool{
     }
 
     @Override
-    public void fillStorage(Storage storage, boolean isLower) {
-        Queue<MailItem> q = isLower ? this.lower : this.upper;
+    public void fillStorage(Storage storage, BuildingSector sector) {
+        Queue<MailItem> q = sector.equals(BuildingSector.LOWER) ? this.lower : this.upper;
         try {
             while (!storage.isFull() && !q.isEmpty()) {
                 // Could group/order by floor taking priority into account - but already better than simple.

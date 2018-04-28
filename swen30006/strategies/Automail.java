@@ -1,9 +1,6 @@
 package strategies;
 
-import automail.BigRobot;
-import automail.Robot;
-import automail.StrongRobot;
-import automail.WeakRobot;
+import automail.*;
 import exceptions.InvalidRobotConfigException;
 
 public class Automail {
@@ -19,59 +16,53 @@ public class Automail {
         //// Swap the next line for the one below
         mailPool = new WeakStrongMailPool();
 
-        chooseOrdering(type1, type2);
+        createRobots(type1, type2);
     }
 
-    private Robot makeRobot(String type, boolean lower) {
-        IRobotBehaviour tempBehaviour = null;
-        boolean strong = false;
+    private Robot makeRobot(String type, BuildingSector sector) {
+        IRobotBehaviour tempBehaviour;
         Robot robot = null;
 
         switch (type) {
             case "weak":
-                strong = false;
-                tempBehaviour = new MyRobotBehaviour(strong);
-                robot = new WeakRobot(tempBehaviour, mailPool, strong, lower);
+                tempBehaviour = new MyRobotBehaviour(false, sector);
+                robot = new WeakRobot(tempBehaviour, mailPool, false, sector);
                 break;
             case "strong":
-                strong = true;
-                tempBehaviour = new MyRobotBehaviour(strong);
-                robot = new StrongRobot(tempBehaviour, mailPool, strong, lower);
+                tempBehaviour = new MyRobotBehaviour(true, sector);
+                robot = new StrongRobot(tempBehaviour, mailPool, true, sector);
                 break;
             case "big":
-                strong = true;
-                tempBehaviour = new MyRobotBehaviour(strong);
-                robot = new BigRobot(tempBehaviour, mailPool, strong, lower);
+                tempBehaviour = new MyRobotBehaviour(true, sector);
+                robot = new BigRobot(tempBehaviour, mailPool, true, sector);
                 break;
         }
         return robot;
     }
 
-    private void chooseOrdering(String t1, String t2) throws InvalidRobotConfigException {
-
+    private void createRobots(String t1, String t2) throws InvalidRobotConfigException {
         if (t1.equals(t2) && !t1.equals("weak")) {
-            robot1 = makeRobot(t1, true);
-            robot2 = makeRobot(t2, false);
+            robot1 = makeRobot(t1, BuildingSector.LOWER);
+            robot2 = makeRobot(t2, BuildingSector.UPPER);
             return;
         } else if (t1.equals("weak") && !t2.equals("weak")) {
-            robot1 = makeRobot(t1, false);
-            robot2 = makeRobot(t2, true);
+            robot1 = makeRobot(t1, BuildingSector.UPPER);
+            robot2 = makeRobot(t2, BuildingSector.LOWER);
             return;
         } else if (t2.equals("weak") && !t1.equals("weak")) {
-            robot1 = makeRobot(t2, false);
-            robot2 = makeRobot(t1, true);
+            robot1 = makeRobot(t2, BuildingSector.UPPER);
+            robot2 = makeRobot(t1, BuildingSector.LOWER);
             return;
         } else if (t1.equals("strong")) {
-            robot1 = makeRobot(t1, true);
-            robot2 = makeRobot(t2, false);
+            robot1 = makeRobot(t1, BuildingSector.LOWER);
+            robot2 = makeRobot(t2, BuildingSector.UPPER);
             return;
         } else if (t2.equals("strong")) {
-            robot1 = makeRobot(t2, true);
-            robot2 = makeRobot(t1, false);
+            robot1 = makeRobot(t2, BuildingSector.LOWER);
+            robot2 = makeRobot(t1, BuildingSector.UPPER);
             return;
         } else {
             throw new InvalidRobotConfigException();
         }
     }
-    
 }

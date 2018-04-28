@@ -61,5 +61,4 @@ public class StorageTube implements Storage {
     public int getMaxCapacity() {
         return this.maxCapacity;
     }
-
 }

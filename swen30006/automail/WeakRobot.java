@@ -4,20 +4,12 @@ import strategies.IMailPool;
 import strategies.IRobotBehaviour;
 
 public class WeakRobot extends Robot{
+    public static final int CARRY_WEIGHT = 2000;
 
     private final int TUBE_CAPACITY = 4;
-    private final int CARRY_WEIGHT = 2000;
 
-    public WeakRobot(IRobotBehaviour behaviour, IMailPool mailPool, boolean strong, boolean lower) {
-        super(behaviour, mailPool, strong, lower);
+    public WeakRobot(IRobotBehaviour behaviour, IMailPool mailPool, boolean strong, BuildingSector sector) {
+        super(behaviour, mailPool, strong, sector);
         this.storage = new StorageTube(TUBE_CAPACITY);
     }
-
-    public int getCarryWeight() {
-        return CARRY_WEIGHT;
-    }
-
-//    public int getCapacity() {
-//        return TUBE_CAPACITY;
-//    }
 }
