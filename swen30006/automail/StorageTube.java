@@ -36,7 +36,7 @@ public class StorageTube {
      * @return the first item in the storage tube (without removing it)
      */
     public MailItem peek() {
-    	return this.tube.peek();
+        return this.tube.peek();
     }
 
     /**
@@ -45,21 +45,20 @@ public class StorageTube {
      * @throws TubeFullException thrown if an item is added which exceeds the capacity
      */
     public void addItem(MailItem item) throws TubeFullException {
-        if(this.tube.size() < this.MAXIMUM_CAPACITY){
+        if (this.tube.size() < this.MAXIMUM_CAPACITY) {
             this.tube.add(item);
         } else {
             throw new TubeFullException();
         }
     }
 
-    /** @return the size of the tube */
-    public int getSize() {
-    	return this.tube.size();
+    /** @return the size of the tube **/
+    public int getSize(){
+        return this.tube.size();
     }
     
     /** @return the first item in the storage tube (after removing it) */
     public MailItem pop() {
         return this.tube.pop();
     }
-
 }

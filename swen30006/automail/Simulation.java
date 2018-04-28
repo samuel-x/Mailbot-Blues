@@ -1,6 +1,7 @@
 package automail;
 
 import exceptions.ExcessiveDeliveryException;
+import exceptions.InvalidStateTransitionException;
 import exceptions.ItemTooHeavyException;
 import exceptions.MailAlreadyDeliveredException;
 import strategies.Automail;
@@ -38,21 +39,19 @@ public class Simulation {
         while (mailDelivered.size() != generator.MAIL_TO_CREATE) {
             generator.addMailToPool(automail.mailPool, Clock.Time());
             priorityMail = generator.getPriorityMailAtTime(Clock.Time());
-
             if (priorityMail != null) {
-            	automail.robot1.behaviour.priorityArrival(priorityMail.getPriorityLevel(), priorityMail.getWeight());
-            	automail.robot2.behaviour.priorityArrival(priorityMail.getPriorityLevel(), priorityMail.getWeight());
+                automail.robot1.behaviour.priorityArrival(priorityMail.getPriorityLevel(), priorityMail.getWeight());
+                automail.robot2.behaviour.priorityArrival(priorityMail.getPriorityLevel(), priorityMail.getWeight());
             }
 
             try {
-				automail.robot1.step();
-				automail.robot2.step();
-			} catch (ExcessiveDeliveryException|ItemTooHeavyException e) {
-				e.printStackTrace();
-				System.out.println("Simulation unable to complete.");
-				System.exit(0);
-			}
-
+                automail.robot1.step();
+                automail.robot2.step();
+            } catch (ExcessiveDeliveryException | ItemTooHeavyException | InvalidStateTransitionException e) {
+                e.printStackTrace();
+                System.out.println("Simulation unable to complete.");
+                System.exit(0);
+            }
             Clock.Tick();
         }
 
@@ -86,9 +85,9 @@ public class Simulation {
     }
 
     private static double calculateDeliveryScore(MailItem deliveryItem) {
-    	// Penalty for longer delivery times
-    	final double penalty = 1.1;
-    	double priority_weight = deliveryItem.getPriorityLevel();
+        // Penalty for longer delivery times
+        final double penalty = 1.1;
+        double priority_weight = deliveryItem.getPriorityLevel();
         // Take (delivery time - arrivalTime)**penalty * (1+sqrt(priority_weight))
         return Math.pow(Clock.Time() - deliveryItem.getArrivalTime(),penalty)*(1+Math.sqrt(priority_weight));
     }
