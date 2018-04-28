@@ -40,17 +40,17 @@ public class Automail {
     	Robot robot = null;
     	if (type.equals("weak")) {
     		strong = false;
-    		tempBehaviour = new MyRobotBehaviour(strong, WeakRobot.TUBE_CAPACITY);
+    		tempBehaviour = new MyRobotBehaviour(strong);
     		robot = new WeakRobot(tempBehaviour, mailPool, strong);
     	}
     	if (type.equals("strong")) {
     		strong = true;
-    		tempBehaviour = new MyRobotBehaviour(strong, StrongRobot.TUBE_CAPACITY);
+    		tempBehaviour = new MyRobotBehaviour(strong);
     		robot = new StrongRobot(tempBehaviour, mailPool, strong);
     	}
     	if (type.equals("big")) {
     		strong = true;
-    		tempBehaviour = new MyRobotBehaviour(strong, BigRobot.TUBE_CAPACITY);
+    		tempBehaviour = new MyRobotBehaviour(strong);
     		robot = new BigRobot(tempBehaviour, mailPool, strong);
     	}
     	return robot;
