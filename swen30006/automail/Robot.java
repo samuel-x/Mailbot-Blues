@@ -56,7 +56,7 @@ public class Robot {
                 // If its current position is at the mailroom, then the robot should change state.
                 if (this.currentFloor == Building.MAILROOM_LOCATION) {
                     while (!this.storage.isEmpty()) {
-                        MailItem mailItem = this.storage.takeItem();
+                        MailItem mailItem = this.storage.pop();
                         this.mailPool.addToPool(mailItem);
                         System.out.printf("T: %3d > old addToPool [%s]%n", Clock.Time(), mailItem.toString());
                     }
@@ -125,7 +125,7 @@ public class Robot {
      */
     private void setRoute() throws ItemTooHeavyException {
         // Pop the item from the StorageUnit
-        this.deliveryItem = this.storage.takeItem();
+        this.deliveryItem = this.storage.pop();
         if (!this.strong && this.deliveryItem.getWeight() > 2000) {
             throw new ItemTooHeavyException();
         }

@@ -22,14 +22,13 @@ public class Simulation {
         // Read the .Properties file if it exists.
         if (args.length != 0) {
             properties = new Properties(args[0]);
-            System.out.println(properties.toString());
         } else {
             throw new IllegalArgumentException("No arguments input. Please give a valid path.");
         }
 
         Building.init(properties.getMaxFloor());
-        Automail automail = new Automail();
 
+        Automail automail = new Automail();
 
         MailGenerator generator = new MailGenerator(properties.getMailToCreate(),
                 properties.getLastDeliveryTime(), properties.getSeed());

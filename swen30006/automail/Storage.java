@@ -18,7 +18,7 @@ public interface Storage {
     /**
      * This takes and removes an item from storage.
      */
-    MailItem takeItem();
+    MailItem pop();
 
     /**
      * This function returns the top mail item it is holding.
@@ -39,10 +39,4 @@ public interface Storage {
      * This function returns a boolean of whether the storage device is empty.
      */
     boolean isEmpty();
-
-    /**
-     * This function returns a boolean of whether the current item is a priority item
-     */
-    boolean canDeliverPriorityItem();
-
 }

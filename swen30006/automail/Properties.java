@@ -106,10 +106,4 @@ public class Properties {
         public String getRobotType2() {
             return this.robotType2;
         }
-
-    @Override
-    public String toString() {
-        return String.format("seed: %d, maxfloor: %d, deliverypenalty: %f, lastdeliverytime: %d, mailtocreate: %d, type 1: %s, type 2: %s\n",
-                getSeed(), getMaxFloor(), getDeliveryPenalty(), getLastDeliveryTime(), getMailToCreate(), getRobotType1(), getRobotType2());
-    }
 }

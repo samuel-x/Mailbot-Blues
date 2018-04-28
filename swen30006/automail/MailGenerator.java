@@ -27,7 +27,6 @@ public class MailGenerator {
      * @param seed random seed for generating mail
      */
     public MailGenerator(int mailToCreate, int lastDeliveryTime, Integer seed) {
-        System.out.printf("1012: %d, %d, %d, %d\n", mailToCreate, lastDeliveryTime, seed, Building.FLOORS);
         if (seed != null) {
             this.random = new Random(seed);
         } else {

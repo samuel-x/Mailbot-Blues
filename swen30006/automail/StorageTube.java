@@ -50,12 +50,7 @@ public class StorageTube implements Storage {
     }
 
     /** @return the first item in the storage tube (after removing it) */
-    public MailItem takeItem(){
+    public MailItem pop(){
         return this.tube.pop();
     }
-
-    public boolean canDeliverPriorityItem() {
-        return (tube.peek().hasPriority());
-    }
-
 }
