@@ -30,8 +30,7 @@ public class MyRobotBehaviour implements IRobotBehaviour {
         } else {
             // Return true for the strong robot if the one waiting is higher priority than the one we have
             // Assumes that the one at the top of the tube has the highest priority
-            return strong && this.newPriorityLevel > (storage.canDeliverPriorityItem() ? 1 : 0);
+            return this.strong && this.newPriorityLevel > (storage.peek().getPriorityLevel());
         }
     }
-
 }

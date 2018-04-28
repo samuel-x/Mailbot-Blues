@@ -23,7 +23,7 @@ public interface Storage {
     /**
      * This function returns the top mail item it is holding.
      */
-    MailItem check();
+    MailItem peek();
 
     /**
      * This function returns the size of the storage device.

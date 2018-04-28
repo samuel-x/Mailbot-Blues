@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 public class Properties {
         private int seed;
         private int maxFloor;
-        private float deliveryPenalty;
+        private double deliveryPenalty;
         private int lastDeliveryTime;
         private int mailToCreate;
         private String robotType1;
@@ -29,42 +29,51 @@ public class Properties {
 
         /**
          * This method loads our values in depending on the specified value in the line.
-         * @param line
+         * @param line A given line with a value in the class.
          */
         private void load(String line) {
-            if (line.contains("Seed")) {
-                // If we have no seed, return 0
-                if (parseValue(line).equals(" ")) {
-                    seed = 0;
-                }
-                else {
-                    seed = Integer.parseInt(parseValue(line));
-                }
-            }
-            else if (line.contains("Number_of_Floors")) {
-                maxFloor = Integer.parseInt(parseValue(line));
-            }
-            else if (line.contains("Delivery_Penalty")) {
-                deliveryPenalty = Float.parseFloat(parseValue(line));
-            }
-            else if (line.contains("Last_Delivery_Time")) {
-                lastDeliveryTime = Integer.parseInt(parseValue(line));
-            }
-            else if (line.contains("Mail_to_Create")) {
-                mailToCreate = Integer.parseInt(parseValue(line));
-            }
-            else if (line.contains("Robot_Type_1")) {
-                robotType1 = parseValue(line);
-            }
-            else if (line.contains("Robot_Type_2")) {
-                robotType2 = parseValue(line);
+            String argument = line.substring(0, line.indexOf("="));
+
+            switch (argument) {
+                case "Seed":
+                    // If we have no seed, return 0
+                    if (parseValue(line).equals(" ")) {
+                        this.seed = 0;
+                    } else {
+                        this.seed = Integer.parseInt(parseValue(line));
+                    }
+                    break;
+
+                case "Number_of_Floors":
+                    this.maxFloor = Integer.parseInt(parseValue(line));
+                    break;
+
+                case "Delivery_Penalty":
+                    this.deliveryPenalty = Double.parseDouble(parseValue(line));
+                    break;
+
+                case "Last_Delivery_Time":
+                    this.lastDeliveryTime = Integer.parseInt(parseValue(line));
+                    break;
+
+                case "Mail_to_Create":
+                    this.mailToCreate = Integer.parseInt(parseValue(line));
+                    break;
+
+                case "Robot_Type_1":
+                    this.robotType1 = parseValue(line);
+                    break;
+
+                case "Robot_Type_2":
+                    this.robotType2 = parseValue(line);
+                    break;
             }
         }
 
         /**
          * This simply returns a string of the value of a variable in the .properties file.
          * @param line String containing the parameter to be configured
-         * @return
+         * @return The value defined in the line.
          */
         private String parseValue(String line) {
                 return line.substring(line.lastIndexOf("=") + 1);
@@ -78,7 +87,7 @@ public class Properties {
             return this.maxFloor;
         }
 
-        public float getDeliveryPenalty() {
+        public double getDeliveryPenalty() {
             return this.deliveryPenalty;
         }
 
@@ -97,4 +106,10 @@ public class Properties {
         public String getRobotType2() {
             return this.robotType2;
         }
+
+    @Override
+    public String toString() {
+        return String.format("seed: %d, maxfloor: %d, deliverypenalty: %f, lastdeliverytime: %d, mailtocreate: %d, type 1: %s, type 2: %s\n",
+                getSeed(), getMaxFloor(), getDeliveryPenalty(), getLastDeliveryTime(), getMailToCreate(), getRobotType1(), getRobotType2());
+    }
 }

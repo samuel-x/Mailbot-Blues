@@ -19,22 +19,22 @@ public class Simulation {
 
     public static void main(String[] args) {
 
-        /** Read the .Properties file if it exists */
+        // Read the .Properties file if it exists.
         if (args.length != 0) {
             properties = new Properties(args[0]);
-        }
-        else {
+            System.out.println(properties.toString());
+        } else {
             throw new IllegalArgumentException("No arguments input. Please give a valid path.");
         }
 
+        Building.init(properties.getMaxFloor());
         Automail automail = new Automail();
 
-        Building.init(properties.getMaxFloor());
 
         MailGenerator generator = new MailGenerator(properties.getMailToCreate(),
                 properties.getLastDeliveryTime(), properties.getSeed());
         
-        /** Initiate all the mail */
+        // Initiate all the mail.
         generator.generateAllMail();
         MailItem priorityMail;
         while (mailDelivered.size() != generator.MAIL_TO_CREATE) {
@@ -86,10 +86,9 @@ public class Simulation {
     }
 
     private static double calculateDeliveryScore(MailItem deliveryItem) {
-        double priority_weight = deliveryItem.getPriorityLevel();
-        // Take (delivery time - arrivalTime)**penalty * (1+sqrt(priority_weight))
-        return Math.pow(Clock.Time() - deliveryItem.getArrivalTime(),properties.getDeliveryPenalty())
-                * (1+Math.sqrt(priority_weight));
+        double priorityLevel = deliveryItem.getPriorityLevel();
+        // Take (delivery time - arrivalTime)**penalty * (1+sqrt(priorityLevel))
+        return Math.pow(Clock.Time() - deliveryItem.getArrivalTime(), properties.getDeliveryPenalty())
+                * (1+Math.sqrt(priorityLevel));
     }
-
 }

@@ -12,10 +12,10 @@ public class Building {
 
     public static void init(int floors) {
         if (floors < 0) {
-            throw new IllegalArgumentException("Building floors cannot be negative!");
+            throw new IllegalArgumentException("Building floors cannot be negative.");
         }
         if (FLOORS > 0) {
-            throw new IllegalArgumentException("Building FLOORS has been initialized twice.");
+            throw new IllegalArgumentException("Building FLOORS cannot be initilized more than once.");
         }
         else {
             FLOORS = floors;
