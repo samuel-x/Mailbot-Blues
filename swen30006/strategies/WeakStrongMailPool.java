@@ -4,8 +4,8 @@ import java.util.*;
 
 import automail.Building;
 import automail.MailItem;
-import automail.StorageTube;
-import exceptions.TubeFullException;
+import automail.Storage;
+import exceptions.StorageFullException;
 
 public class WeakStrongMailPool implements IMailPool{
     private LinkedList<MailItem> upper = new LinkedList<>();  // weak robot will take this set
@@ -44,14 +44,14 @@ public class WeakStrongMailPool implements IMailPool{
     }
 
     @Override
-    public void fillStorageTube(StorageTube tube, boolean strong) {
+    public void fillStorage(Storage tube, boolean strong) {
         Queue<MailItem> q = strong ? this.lower : this.upper;
         try {
             while (!tube.isFull() && !q.isEmpty()) {
                 // Could group/order by floor taking priority into account - but already better than simple.
                 tube.addItem(q.remove());
             }
-        } catch (TubeFullException e) {
+        } catch (StorageFullException e) {
             e.printStackTrace();
         }
     }

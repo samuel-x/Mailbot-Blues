@@ -13,27 +13,27 @@ import java.util.ArrayList;
  */
 public class Simulation {
 
-    /** Constant for the mail generator */
-    private static final int MAIL_TO_CREATE = 180;
-  
     private static ArrayList<MailItem> mailDelivered = new ArrayList<>();
     private static double totalScore = 0;
+    private static Properties properties;
 
     public static void main(String[] args) {
-        // Initialize the seed used for the random number generator.
-        Integer seed = null;
 
-        // Read the first argument and save it as a seed if it exists
+        // Read the .Properties file if it exists.
         if (args.length != 0) {
-            seed = Integer.parseInt(args[0]);
+            properties = new Properties(args[0]);
+        } else {
+            throw new IllegalArgumentException("No arguments input. Please give a valid path.");
         }
-      
+
+        Building.init(properties.getMaxFloor());
+
         Automail automail = new Automail();
 
-        // TODO: Replace the 300 (should be replaced with Properties.get____() that Sam is working on).
-        MailGenerator generator = new MailGenerator(MAIL_TO_CREATE, 300, seed);
-
-        // Initiate all the mail
+        MailGenerator generator = new MailGenerator(properties.getMailToCreate(),
+                properties.getLastDeliveryTime(), properties.getSeed());
+        
+        // Initiate all the mail.
         generator.generateAllMail();
         MailItem priorityMail;
         while (mailDelivered.size() != generator.MAIL_TO_CREATE) {
@@ -85,10 +85,9 @@ public class Simulation {
     }
 
     private static double calculateDeliveryScore(MailItem deliveryItem) {
-        // Penalty for longer delivery times
-        final double penalty = 1.1;
-        double priority_weight = deliveryItem.getPriorityLevel();
-        // Take (delivery time - arrivalTime)**penalty * (1+sqrt(priority_weight))
-        return Math.pow(Clock.Time() - deliveryItem.getArrivalTime(),penalty)*(1+Math.sqrt(priority_weight));
+        double priorityLevel = deliveryItem.getPriorityLevel();
+        // Take (delivery time - arrivalTime)**penalty * (1+sqrt(priorityLevel))
+        return Math.pow(Clock.Time() - deliveryItem.getArrivalTime(), properties.getDeliveryPenalty())
+                * (1+Math.sqrt(priorityLevel));
     }
 }

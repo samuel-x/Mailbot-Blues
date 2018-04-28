@@ -1,6 +1,6 @@
 package strategies;
 
-import automail.StorageTube;
+import automail.Storage;
 
 public interface IRobotBehaviour {
     /**
@@ -10,14 +10,14 @@ public interface IRobotBehaviour {
     void startDelivery();
 
     /**
-     * @param tube refers to the pack the robot uses to deliver mail.
+     * @param storage refers to the pack the robot uses to deliver mail.
      * @return When this is true, the robot is returned to the mail room.
      * The robot will always return to the mail room when the tube is empty.
      * This method allows the robot to return with items still in the tube,
      * if circumstances make this desirable.
      */
-    boolean returnToMailRoom(StorageTube tube);
-    
+    boolean returnToMailRoom(Storage storage);
+
     /**
      * @param priority is that of the priority mail item which just arrived.
      * @param weight is that of the same item.

@@ -1,7 +1,6 @@
 package strategies;
 
-import automail.MailItem;
-import automail.StorageTube;
+import automail.Storage;
 
 public class MyRobotBehaviour implements IRobotBehaviour {
     private boolean strong;
@@ -23,20 +22,15 @@ public class MyRobotBehaviour implements IRobotBehaviour {
             this.newPriorityLevel = priority;
         }
     }
- 
-    private int tubePriority(StorageTube tube) {  // Assumes at least one item in tube TODO: Why? Let's not assume.
-        MailItem item = tube.peek();
-        return item.getPriorityLevel();
-    }
 
     @Override
-    public boolean returnToMailRoom(StorageTube tube) {
-        if (tube.isEmpty()) {
+    public boolean returnToMailRoom(Storage storage) {
+        if (storage.isEmpty()) {
             return false; // Empty tube means we are returning anyway
         } else {
             // Return true for the strong robot if the one waiting is higher priority than the one we have
             // Assumes that the one at the top of the tube has the highest priority
-            return this.strong && this.newPriorityLevel > tubePriority(tube);
+            return this.strong && this.newPriorityLevel > (storage.peek().getPriorityLevel());
         }
     }
 }
