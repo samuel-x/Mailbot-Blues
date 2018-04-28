@@ -12,7 +12,7 @@ public class BigRobot extends Robot{
 		this.tube = new StorageTube(TUBE_CAPACITY);
 	}
 	
-	public int getCapacity() {
-		return TUBE_CAPACITY;
-	}
+//	public int getCapacity() {
+//		return TUBE_CAPACITY;
+//	}
 }
