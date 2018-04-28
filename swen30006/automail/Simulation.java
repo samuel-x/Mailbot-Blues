@@ -15,25 +15,24 @@ public class Simulation {
 
     private static ArrayList<MailItem> mailDelivered = new ArrayList<>();
     private static double totalScore = 0;
+    private static Properties properties;
 
     public static void main(String[] args) {
 
         /** Read the .Properties file if it exists */
-        Properties automailProperties;
         if (args.length != 0) {
-
-            automailProperties = new Properties(args[0]);
+            properties = new Properties(args[0]);
         }
         else {
             throw new IllegalArgumentException("No arguments input. Please give a valid path.");
         }
 
-        // Initialize the seed used for the random number generator.
-        Integer seed = automailProperties.getSeed();
-
         Automail automail = new Automail();
 
-        MailGenerator generator = new MailGenerator(automailProperties.getMailToCreate(), automailProperties.getLastDeliveryTime(), automail.mailPool, seed);
+        Building.init(properties.getMaxFloor());
+
+        MailGenerator generator = new MailGenerator(properties.getMailToCreate(),
+                properties.getLastDeliveryTime(), properties.getSeed());
         
         /** Initiate all the mail */
         generator.generateAllMail();
@@ -87,10 +86,10 @@ public class Simulation {
     }
 
     private static double calculateDeliveryScore(MailItem deliveryItem) {
-        // Penalty for longer delivery times
-        final double penalty = 1.1;
         double priority_weight = deliveryItem.getPriorityLevel();
         // Take (delivery time - arrivalTime)**penalty * (1+sqrt(priority_weight))
-        return Math.pow(Clock.Time() - deliveryItem.getArrivalTime(),penalty)*(1+Math.sqrt(priority_weight));
+        return Math.pow(Clock.Time() - deliveryItem.getArrivalTime(),properties.getDeliveryPenalty())
+                * (1+Math.sqrt(priority_weight));
     }
+
 }

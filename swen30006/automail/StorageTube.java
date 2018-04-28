@@ -28,7 +28,7 @@ public class StorageTube implements Storage {
     
     /** @return the first item in the storage tube (without removing it) */
     public MailItem check() {
-    	return tube.peek();
+        return tube.peek();
     }
 
     /**

@@ -23,15 +23,15 @@ public class MyRobotBehaviour implements IRobotBehaviour {
         }
     }
 
-	@Override
-	public boolean returnToMailRoom(Storage storage) {
-		if (storage.isEmpty()) {
-			return false; // Empty tube means we are returning anyway
-		} else {
-			// Return true for the strong robot if the one waiting is higher priority than the one we have
-			// Assumes that the one at the top of the tube has the highest priority
-			return strong && this.newPriorityLevel > (storage.canDeliverPriorityItem() ? 1 : 0);
-		}
-	}
+    @Override
+    public boolean returnToMailRoom(Storage storage) {
+        if (storage.isEmpty()) {
+            return false; // Empty tube means we are returning anyway
+        } else {
+            // Return true for the strong robot if the one waiting is higher priority than the one we have
+            // Assumes that the one at the top of the tube has the highest priority
+            return strong && this.newPriorityLevel > (storage.canDeliverPriorityItem() ? 1 : 0);
+        }
+    }
 
 }

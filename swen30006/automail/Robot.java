@@ -11,7 +11,7 @@ import strategies.IRobotBehaviour;
  */
 public class Robot {
 
-	Storage storage;
+    Storage storage;
     IRobotBehaviour behaviour;
     public final String id;
 

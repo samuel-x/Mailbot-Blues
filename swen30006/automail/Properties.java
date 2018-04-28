@@ -21,7 +21,7 @@ public class Properties {
             // Use a stream to capture all configuration lines and parse them into values
             try (Stream<String> stream = Files.lines(Paths.get(path))) {
                 stream.filter(line -> !line.startsWith("#"))
-                                .forEach(this::load);
+                        .forEach(this::load);
             } catch (IOException e) {
                 e.printStackTrace();
             }
