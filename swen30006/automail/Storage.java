@@ -26,9 +26,9 @@ public interface Storage {
     MailItem peek();
 
     /**
-     * This function returns the size of the storage device.
+     * This function returns the current size of the storage device.
      */
-    int getSize();
+    int getCurrentSize();
 
     /**
      * This function returns a boolean of whether the storage device is full.
@@ -39,4 +39,10 @@ public interface Storage {
      * This function returns a boolean of whether the storage device is empty.
      */
     boolean isEmpty();
+
+    /**
+     * This function returns the maximum capacity of the storage device
+     * @return
+     */
+    int getMaxCapacity();
 }

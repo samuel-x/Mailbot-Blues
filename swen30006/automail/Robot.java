@@ -9,7 +9,7 @@ import strategies.IRobotBehaviour;
 /**
  * The robot delivers mail!
  */
-public class Robot {
+public abstract class Robot {
 
     Storage storage;
     IRobotBehaviour behaviour;
@@ -21,6 +21,8 @@ public class Robot {
     private int destinationFloor;
     private IMailPool mailPool;
     private boolean strong;
+    private BuildingSector sector;
+
     private MailItem deliveryItem;
     private int deliveryCounter;
 
@@ -30,16 +32,18 @@ public class Robot {
      * @param behaviour governs selection of mail items for delivery and behaviour on priority arrivals
      * @param mailPool is the source of mail items
      * @param strong is whether the robot can carry heavy items
+     * @param sector is what sector of the building this robot serves.
      */
-    public Robot(IRobotBehaviour behaviour, IMailPool mailPool, boolean strong) {
+    public Robot(IRobotBehaviour behaviour, IMailPool mailPool, boolean strong, BuildingSector sector) {
         this.id = "R" + hashCode();
         // currentState = RobotState.WAITING;
         this.currentState = RobotState.RETURNING;
         this.currentFloor = Building.MAILROOM_LOCATION;
-        this.storage = new StorageTube();
+        this.storage = null;
         this.behaviour = behaviour;
         this.mailPool = mailPool;
         this.strong = strong;
+        this.sector = sector;
         this.deliveryCounter = 0;
     }
 
@@ -66,10 +70,9 @@ public class Robot {
                     moveTowards(Building.MAILROOM_LOCATION);
                     break;
                 }
-
             case WAITING:
                 // Tell the sorter the robot is ready
-                this.mailPool.fillStorage(this.storage, this.strong);
+                mailPool.fillStorage(this.storage, this.sector);
                 // System.out.println("Tube total size: "+tube.getTotalOfSizes());
                 // If the StorageTube is ready and the Robot is waiting in the mailroom then start the delivery.
                 if (!this.storage.isEmpty()) {
@@ -87,7 +90,7 @@ public class Robot {
                     // Delivery complete, report this to the simulator!
                     Simulation.reportDelivery(this.deliveryItem);
                     this.deliveryCounter++;
-                    if (this.deliveryCounter > 4) {
+                    if (this.deliveryCounter > storage.getMaxCapacity()) {
                         throw new ExcessiveDeliveryException();
                     }
                     // Check if want to return or if there are more items in the tube
@@ -95,26 +98,13 @@ public class Robot {
                     // if(tube.isEmpty()){
                         changeState(RobotState.RETURNING);
                     } else {
-                        /** If there are more items, set the robot's route to the location to deliver the item */
+                        // If there are more items, set the robot's route to the location to deliver the item.
                         setRoute();
                         changeState(RobotState.DELIVERING);
                     }
-                } else {/*
-                    if(wantToReturn){
-                        // Put the item we are trying to deliver back
-                        try {
-                            tube.addItem(deliveryItem);
-                        } catch (TubeFullException e) {
-                            e.printStackTrace();
-                        }
-                        changeState(RobotState.RETURNING);
-                    }
-                    else{*/
+                } else {
                     // The robot is not at the destination yet, move towards it!
-                        moveTowards(this.destinationFloor);
-                    /*
-                    }
-                    */
+                    moveTowards(this.destinationFloor);
                 }
                 break;
         }
@@ -126,7 +116,7 @@ public class Robot {
     private void setRoute() throws ItemTooHeavyException {
         // Pop the item from the StorageUnit
         this.deliveryItem = this.storage.pop();
-        if (!this.strong && this.deliveryItem.getWeight() > 2000) {
+        if (!this.strong && this.deliveryItem.getWeight() > WeakRobot.CARRY_WEIGHT) {
             throw new ItemTooHeavyException();
         }
         // Set the destination floor

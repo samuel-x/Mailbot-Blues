@@ -2,6 +2,7 @@ package automail;
 
 import exceptions.ExcessiveDeliveryException;
 import exceptions.InvalidStateTransitionException;
+import exceptions.InvalidRobotConfigException;
 import exceptions.ItemTooHeavyException;
 import exceptions.MailAlreadyDeliveredException;
 import strategies.Automail;
@@ -28,7 +29,16 @@ public class Simulation {
 
         Building.init(properties.getMaxFloor());
 
-        Automail automail = new Automail();
+        Automail automail = null;
+
+        try {
+            automail = new Automail(properties.getRobotType1(), properties.getRobotType2());
+        }
+        catch (InvalidRobotConfigException e) {
+            e.printStackTrace();
+            System.out.println("Simulation unable to complete.");
+            System.exit(1);
+        }
 
         MailGenerator generator = new MailGenerator(properties.getMailToCreate(),
                 properties.getLastDeliveryTime(), properties.getSeed());
@@ -50,7 +60,7 @@ public class Simulation {
             } catch (ExcessiveDeliveryException | ItemTooHeavyException | InvalidStateTransitionException e) {
                 e.printStackTrace();
                 System.out.println("Simulation unable to complete.");
-                System.exit(0);
+                System.exit(1);
             }
             Clock.Tick();
         }
