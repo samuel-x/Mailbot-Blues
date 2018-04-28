@@ -10,8 +10,8 @@ import automail.Storage;
  * 
  */
 public interface IMailPool {
-	
-	/**
+
+    /**
      * Adds an item to the mail pool
      * @param mailItem the mail item being added.
      */
