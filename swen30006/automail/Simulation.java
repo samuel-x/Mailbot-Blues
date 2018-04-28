@@ -1,79 +1,70 @@
 package automail;
 
 import exceptions.ExcessiveDeliveryException;
+import exceptions.InvalidStateTransitionException;
 import exceptions.InvalidRobotConfigException;
 import exceptions.ItemTooHeavyException;
 import exceptions.MailAlreadyDeliveredException;
 import strategies.Automail;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * This class simulates the behaviour of AutoMail
  */
 public class Simulation {
 
-    /** Constant for the mail generator */
-    private static final int MAIL_TO_CREATE = 180;
-  
     private static ArrayList<MailItem> mailDelivered = new ArrayList<>();
     private static double totalScore = 0;
+    private static Properties properties;
 
-    public static void main(String[] args) throws InvalidRobotConfigException { //throws IOException {
- /*   	// Should probably be using properties here
-    	Properties automailProperties = new Properties();
-		// Defaults
-		automailProperties.setProperty("Name_of_Property", "20");  // Property value may need to be converted from a string to the appropriate type
+    public static void main(String[] args) {
 
-		FileReader inStream = null;
-		
-		try {
-			inStream = new FileReader("automail.properties");
-			automailProperties.load(inStream);
-		} finally {
-			 if (inStream != null) {
-	                inStream.close();
-	            }
-		}
-		
-		int i = Integer.parseInt(automailProperties.getProperty("Name_of_Property"));
-*/
-
-        // Initialize the seed used for the random number generator.
-        Integer seed = null;
-        
-        /** Read the first argument and save it as a seed if it exists */
-        if(args.length != 0) {
-            seed = Integer.parseInt(args[0]);
+        // Read the .Properties file if it exists.
+        if (args.length != 0) {
+            properties = new Properties(args[0]);
+        } else {
+            throw new IllegalArgumentException("No arguments input. Please give a valid path.");
         }
-        
-        // TODO: Read in robot types from properties - hard coded right now
-        Automail automail = new Automail("strong", "weak");
 
-        // TODO: Replace the 300 (should be replaced with Properties.get____() that Sam is working on).
-        MailGenerator generator = new MailGenerator(MAIL_TO_CREATE, 300, automail.mailPool, seed);
+        Building.init(properties.getMaxFloor());
+
+        Automail automail = null;
+
+        try {
+            automail = new Automail(properties.getRobotType1(), properties.getRobotType2());
+        }
+        catch (InvalidRobotConfigException e) {
+            e.printStackTrace();
+            System.out.println("Simulation unable to complete.");
+            System.exit(1);
+        }
+
+        MailGenerator generator = new MailGenerator(properties.getMailToCreate(),
+                properties.getLastDeliveryTime(), properties.getSeed());
         
-        /** Initiate all the mail */
+        // Initiate all the mail.
         generator.generateAllMail();
-        MailItem priority;
-        while(mailDelivered.size() != generator.MAIL_TO_CREATE) {
-        	//System.out.println("-- Step: "+Clock.Time());
-            priority = generator.step();
-            if (priority != null) {
-            	automail.robot1.behaviour.priorityArrival(priority.getPriorityLevel(), priority.getWeight());
-            	automail.robot2.behaviour.priorityArrival(priority.getPriorityLevel(), priority.getWeight());
+        MailItem priorityMail;
+        while (mailDelivered.size() != generator.MAIL_TO_CREATE) {
+            generator.addMailToPool(automail.mailPool, Clock.Time());
+            priorityMail = generator.getPriorityMailAtTime(Clock.Time());
+            if (priorityMail != null) {
+                automail.robot1.behaviour.priorityArrival(priorityMail.getPriorityLevel(), priorityMail.getWeight());
+                automail.robot2.behaviour.priorityArrival(priorityMail.getPriorityLevel(), priorityMail.getWeight());
             }
+
             try {
-				automail.robot1.step();
-				automail.robot2.step();
-			} catch (ExcessiveDeliveryException|ItemTooHeavyException e) {
-				e.printStackTrace();
-				System.out.println("Simulation unable to complete.");
-				System.exit(0);
-			}
+                automail.robot1.step();
+                automail.robot2.step();
+            } catch (ExcessiveDeliveryException | ItemTooHeavyException | InvalidStateTransitionException e) {
+                e.printStackTrace();
+                System.out.println("Simulation unable to complete.");
+                System.exit(1);
+            }
             Clock.Tick();
         }
+
         printResults();
     }
 
@@ -104,10 +95,9 @@ public class Simulation {
     }
 
     private static double calculateDeliveryScore(MailItem deliveryItem) {
-    	// Penalty for longer delivery times
-    	final double penalty = 1.1;
-    	double priority_weight = deliveryItem.getPriorityLevel();
-        // Take (delivery time - arrivalTime)**penalty * (1+sqrt(priority_weight))
-        return Math.pow(Clock.Time() - deliveryItem.getArrivalTime(),penalty)*(1+Math.sqrt(priority_weight));
+        double priorityLevel = deliveryItem.getPriorityLevel();
+        // Take (delivery time - arrivalTime)**penalty * (1+sqrt(priorityLevel))
+        return Math.pow(Clock.Time() - deliveryItem.getArrivalTime(), properties.getDeliveryPenalty())
+                * (1+Math.sqrt(priorityLevel));
     }
 }
