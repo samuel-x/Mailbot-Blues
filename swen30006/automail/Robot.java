@@ -20,6 +20,7 @@ public abstract class Robot {
     private int destination_floor;
     private IMailPool mailPool;
     private boolean strong;
+    private boolean lower;
     
     private MailItem deliveryItem;
     
@@ -33,7 +34,7 @@ public abstract class Robot {
      * @param mailPool is the source of mail items
      * @param strong is whether the robot can carry heavy items
      */
-    public Robot(IRobotBehaviour behaviour, IMailPool mailPool, boolean strong) {
+    public Robot(IRobotBehaviour behaviour, IMailPool mailPool, boolean strong, boolean lower) {
     	id = "R" + hashCode();
         // current_state = RobotState.WAITING;
     	current_state = RobotState.RETURNING;
@@ -43,6 +44,7 @@ public abstract class Robot {
         this.behaviour = behaviour;
         this.mailPool = mailPool;
         this.strong = strong;
+        this.lower = lower;
         this.deliveryCounter = 0;
     }
 
@@ -69,7 +71,7 @@ public abstract class Robot {
                 }
     		case WAITING:
     			/** Tell the sorter the robot is ready */
-    			mailPool.fillStorageTube(tube, strong);
+    			mailPool.fillStorageTube(tube, lower);
                 // System.out.println("Tube total size: "+tube.getTotalOfSizes());
                 /** If the StorageTube is ready and the Robot is waiting in the mailroom then start the delivery */
                 if(!tube.isEmpty()){
@@ -86,7 +88,7 @@ public abstract class Robot {
                     /** Delivery complete, report this to the simulator! */
                     Simulation.reportDelivery(deliveryItem);
                     deliveryCounter++;
-                    if(deliveryCounter > 4){
+                    if(deliveryCounter > tube.getMaxCapacity()){
                     	throw new ExcessiveDeliveryException();
                     }
                     /** Check if want to return or if there are more items in the tube*/

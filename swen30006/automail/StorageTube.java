@@ -66,5 +66,9 @@ public class StorageTube {
     public MailItem pop(){
         return tube.pop();
     }
+    
+    public int getMaxCapacity() {
+    	return this.maxCapacity;
+    }
 
 }

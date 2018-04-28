@@ -1,6 +1,7 @@
 package automail;
 
 import exceptions.ExcessiveDeliveryException;
+import exceptions.InvalidRobotConfigException;
 import exceptions.ItemTooHeavyException;
 import exceptions.MailAlreadyDeliveredException;
 import strategies.Automail;
@@ -19,7 +20,7 @@ public class Simulation {
     private static ArrayList<MailItem> mailDelivered = new ArrayList<>();
     private static double totalScore = 0;
 
-    public static void main(String[] args) { //throws IOException {
+    public static void main(String[] args) throws InvalidRobotConfigException { //throws IOException {
  /*   	// Should probably be using properties here
     	Properties automailProperties = new Properties();
 		// Defaults
@@ -48,7 +49,7 @@ public class Simulation {
         }
         
         // TODO: Read in robot types from properties - hard coded right now
-        Automail automail = new Automail("weak", "strong");
+        Automail automail = new Automail("strong", "weak");
 
         // TODO: Replace the 300 (should be replaced with Properties.get____() that Sam is working on).
         MailGenerator generator = new MailGenerator(MAIL_TO_CREATE, 300, automail.mailPool, seed);

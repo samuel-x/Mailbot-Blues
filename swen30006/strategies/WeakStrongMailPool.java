@@ -48,8 +48,8 @@ public class WeakStrongMailPool implements IMailPool{
 	}
 	
 	@Override
-	public void fillStorageTube(StorageTube tube, boolean strong) {
-		Queue<MailItem> q = strong ? lower : upper;
+	public void fillStorageTube(StorageTube tube, boolean isLower) {
+		Queue<MailItem> q = isLower ? lower : upper;
 		try{
 			while(!tube.isFull() && !q.isEmpty()) {
 				tube.addItem(q.remove());  // Could group/order by floor taking priority into account - but already better than simple
