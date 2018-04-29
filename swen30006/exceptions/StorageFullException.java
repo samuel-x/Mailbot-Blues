@@ -1,7 +1,7 @@
 package exceptions;
 
 /**
- * This exception is thrown when a MailItem is added to a StorageTube which does not have the
+ * This exception is thrown when a MailItem is added to a Storage device which does not have the
  * capacity to hold said MailItem
  */
 public class StorageFullException extends Exception {
