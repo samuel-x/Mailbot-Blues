@@ -9,7 +9,7 @@ import java.util.stream.Stream;
  * This class represents the input properties of the simulation
  */
 public class Properties {
-        private int seed;
+        private Integer seed = null;
         private int maxFloor;
         private double deliveryPenalty;
         private int lastDeliveryTime;
@@ -80,7 +80,7 @@ public class Properties {
                 return line.substring(line.lastIndexOf("=") + 1);
             }
 
-        public int getSeed() {
+        public Integer getSeed() {
             return this.seed;
         }
 

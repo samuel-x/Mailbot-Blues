@@ -23,10 +23,18 @@ public class Simulation {
     public static void main(String[] args) {
 
         // Read the .Properties file if it exists.
+        Integer seed;
         if (args.length != 0) {
-            properties = new Properties(args[0]);
-        } else {
-            throw new IllegalArgumentException("No arguments input. Please give a valid path.");
+            seed = Integer.parseInt(args[0]);
+        }
+        else {
+            seed = null;
+        }
+
+        properties = new Properties("automail.Properties");
+
+        if (properties.getSeed() != null) {
+            seed = properties.getSeed();
         }
 
         Building.init(properties.getMaxFloor());
@@ -98,7 +106,6 @@ public class Simulation {
 
     private static double calculateDeliveryScore(MailItem deliveryItem) {
         double priorityLevel = deliveryItem.getPriorityLevel();
-        // Take (delivery time - arrivalTime)**penalty * (1+sqrt(priorityLevel))
         return Math.pow(Clock.Time() - deliveryItem.getArrivalTime(), properties.getDeliveryPenalty())
                 * (1+Math.sqrt(priorityLevel));
     }
