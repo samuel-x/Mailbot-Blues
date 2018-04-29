@@ -22,6 +22,7 @@ public class Properties {
             try (Stream<String> stream = Files.lines(Paths.get(path))) {
                 stream.filter(line -> !line.startsWith("#"))
                         .forEach(this::load);
+                stream.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
