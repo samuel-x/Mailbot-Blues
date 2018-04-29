@@ -6,10 +6,16 @@ import exceptions.ItemTooHeavyException;
 import strategies.IMailPool;
 import strategies.IRobotBehaviour;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 /**
  * The robot delivers mail!
  */
 public abstract class Robot {
+    // Provided code from LMS to ensure consistent hash codes.
+    static int count = 0;
+    static Map<Integer, Integer> hashMap = new TreeMap<Integer, Integer>();
 
     public final String id;
     public RobotState currentState;
@@ -114,11 +120,6 @@ public abstract class Robot {
     protected abstract void setRoute() throws ItemTooHeavyException;
 
     /**
-     * Returns whether the robot can carry something with a given weight
-     */
-
-
-    /**
      * Generic function that moves the robot towards the destination
      * @param destination the floor towards which the robot is moving
      */
@@ -182,5 +183,19 @@ public abstract class Robot {
                 }
                 break;
         }
+    }
+
+    // Provided code from LMS to ensure consistent hash codes.
+    @Override
+    public int hashCode() {
+
+        Integer hash0 = super.hashCode();
+
+        Integer hash = hashMap.get(hash0);
+
+        if (hash == null) { hash = count++; hashMap.put(hash0, hash); }
+
+        return hash;
+
     }
 }
