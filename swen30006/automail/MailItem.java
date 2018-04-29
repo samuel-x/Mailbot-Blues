@@ -3,13 +3,11 @@ package automail;
 import java.util.Map;
 import java.util.TreeMap;
 
-/**
- * Represents a mail item
- */
+/** Represents a mail item. */
 public class MailItem {
     // Provided code from LMS to ensure consistent hash codes.
-    static int count = 0;
-    static Map<Integer, Integer> hashMap = new TreeMap<Integer, Integer>();
+    private static int count = 0;
+    private static Map<Integer, Integer> hashMap = new TreeMap<>();
 
     /** Represents the destination floor to which the mail is intended to go */
     private final int destinationFloor;
@@ -87,14 +85,11 @@ public class MailItem {
     // Provided code from LMS to ensure consistent hash codes.
     @Override
     public int hashCode() {
-
         Integer hash0 = super.hashCode();
-
         Integer hash = hashMap.get(hash0);
-
-        if (hash == null) { hash = count++; hashMap.put(hash0, hash); }
-
+        if (hash == null) {
+            hash = count++; hashMap.put(hash0, hash);
+        }
         return hash;
-
     }
 }

@@ -5,9 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
-/**
- * This class represents the input properties of the simulation
- */
+/** This class represents the input properties of the simulation. */
 public class Properties {
         private Integer seed = null;
         private int maxFloor;
@@ -17,7 +15,11 @@ public class Properties {
         private String robotType1;
         private String robotType2;
 
-        public Properties(String path) {
+    /**
+     * Reads in a given .Properties file.
+     * @param path to the .Properties class.
+     */
+    public Properties(String path) {
             // Use a stream to capture all configuration lines and parse them into values
             try (Stream<String> stream = Files.lines(Paths.get(path))) {
                 stream.filter(line -> !line.startsWith("#"))

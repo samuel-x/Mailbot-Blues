@@ -147,7 +147,6 @@ public class MailGenerator {
      */
     public MailItem getPriorityMailAtTime(int timeStamp) {
         ArrayList<MailItem> items = this.allMail.get(timeStamp);
-
         return items == null ? null : items.stream().filter(MailItem::hasPriority).findFirst().orElse(null);
     }
 }
