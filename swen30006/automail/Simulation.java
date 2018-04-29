@@ -14,6 +14,8 @@ import java.util.ArrayList;
  */
 public class Simulation {
 
+    public static int CARRY_WEIGHT = 2000;
+
     private static ArrayList<MailItem> mailDelivered = new ArrayList<>();
     private static double totalScore = 0;
     private static Properties properties;

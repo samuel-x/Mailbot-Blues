@@ -14,7 +14,7 @@ public class Automail {
         /** Initialize the MailPool */
 
         //// Swap the next line for the one below
-        mailPool = new WeakStrongMailPool();
+        mailPool = new WeakStrongMailPool(Simulation.CARRY_WEIGHT);
 
         createRobots(type1, type2);
     }
@@ -22,19 +22,20 @@ public class Automail {
     private Robot makeRobot(String type, BuildingSector sector) {
         IRobotBehaviour tempBehaviour;
         Robot robot = null;
+        int carryWeight = type.equals("weak") ? Simulation.CARRY_WEIGHT : Integer.MAX_VALUE;
 
         switch (type) {
             case "weak":
-                tempBehaviour = new MyRobotBehaviour(false, sector);
-                robot = new WeakRobot(tempBehaviour, mailPool, false, sector);
+                tempBehaviour = new MyRobotBehaviour(sector);
+                robot = new WeakRobot(tempBehaviour, mailPool, carryWeight, sector);
                 break;
             case "strong":
-                tempBehaviour = new MyRobotBehaviour(true, sector);
-                robot = new StrongRobot(tempBehaviour, mailPool, true, sector);
+                tempBehaviour = new MyRobotBehaviour(sector);
+                robot = new StrongRobot(tempBehaviour, mailPool, carryWeight, sector);
                 break;
             case "big":
-                tempBehaviour = new MyRobotBehaviour(true, sector);
-                robot = new BigRobot(tempBehaviour, mailPool, true, sector);
+                tempBehaviour = new MyRobotBehaviour(sector);
+                robot = new BigRobot(tempBehaviour, mailPool, carryWeight, sector);
                 break;
         }
         return robot;

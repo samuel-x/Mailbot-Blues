@@ -7,8 +7,16 @@ public class BigRobot extends Robot{
 
     private final int TUBE_CAPACITY = 6;
 
-    public BigRobot(IRobotBehaviour behaviour, IMailPool mailPool, boolean strong, BuildingSector sector) {
-        super(behaviour, mailPool, strong, sector);
+    public BigRobot(IRobotBehaviour behaviour, IMailPool mailPool, int carryWeight, BuildingSector sector) {
+        super(behaviour, mailPool, carryWeight, sector);
         this.storage = new StorageTube(TUBE_CAPACITY);
+    }
+
+    @Override
+    protected void setRoute() {
+        // Pop the item from the StorageUnit
+        this.deliveryItem = this.storage.pop();
+        // Set the destination floor
+        this.destinationFloor = this.deliveryItem.getDestFloor();
     }
 }

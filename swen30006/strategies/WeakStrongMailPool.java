@@ -9,9 +9,10 @@ public class WeakStrongMailPool implements IMailPool{
     private LinkedList<MailItem> upper = new LinkedList<>();  // weak robot will take this set
     private LinkedList<MailItem> lower = new LinkedList<>();  // strong robot will take this set
     private final int divider;
-    private static final int MAX_WEIGHT = WeakRobot.CARRY_WEIGHT;
+    private final int CARRY_WEIGHT;
 
-    public WeakStrongMailPool() {
+    public WeakStrongMailPool(int carryWeight) {
+        this.CARRY_WEIGHT = carryWeight;
         this.divider = Building.FLOORS / 2;  // Top normal floor for strong robot
     }
 
@@ -23,7 +24,7 @@ public class WeakStrongMailPool implements IMailPool{
         // This doesn't attempt to put the re-add items back in time order but there will be relatively few of them,
         // from the strong robot only, and only when it is recalled with undelivered items.
         // Check whether mailItem is for strong robot
-        if (mailItem.hasPriority() || mailItem.getWeight() > MAX_WEIGHT || mailItem.getDestFloor() <= this.divider) {
+        if (mailItem.hasPriority() || mailItem.getWeight() > CARRY_WEIGHT || mailItem.getDestFloor() <= this.divider) {
             if (mailItem.hasPriority()) {  // Add in priority order
                 int priority = mailItem.getPriorityLevel();
                 ListIterator<MailItem> i = this.lower.listIterator();
@@ -47,7 +48,7 @@ public class WeakStrongMailPool implements IMailPool{
         try {
             while (!storage.isFull() && !q.isEmpty()) {
                 // Could group/order by floor taking priority into account - but already better than simple.
-                storage.addItem(q.remove());
+                storage.add(q.remove());
             }
         } catch (StorageFullException e) {
             e.printStackTrace();
