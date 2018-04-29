@@ -40,7 +40,7 @@ public class StorageTube implements Storage {
      * @param item The item being added
      * @throws StorageFullException thrown if an item is added which exceeds the capacity
      */
-    public void addItem(MailItem item) throws StorageFullException {
+    public void add(MailItem item) throws StorageFullException {
         if(tube.size() < maxCapacity){
             tube.add(item);
         } else {

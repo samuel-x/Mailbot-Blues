@@ -11,19 +11,18 @@ import strategies.IRobotBehaviour;
  */
 public abstract class Robot {
 
-    Storage storage;
-    IRobotBehaviour behaviour;
     public final String id;
-
     public RobotState currentState;
 
-    private int currentFloor;
-    private int destinationFloor;
-    private IMailPool mailPool;
-    private boolean strong;
-    private BuildingSector sector;
+    protected Storage storage;
+    protected IRobotBehaviour behaviour;
+    protected int destinationFloor;
+    protected MailItem deliveryItem;
+    protected int carryWeight;
 
-    private MailItem deliveryItem;
+    private int currentFloor;
+    private IMailPool mailPool;
+    private BuildingSector sector;
     private int deliveryCounter;
 
     /**
@@ -31,10 +30,9 @@ public abstract class Robot {
      * also set it to be waiting for mail.
      * @param behaviour governs selection of mail items for delivery and behaviour on priority arrivals
      * @param mailPool is the source of mail items
-     * @param strong is whether the robot can carry heavy items
      * @param sector is what sector of the building this robot serves.
      */
-    public Robot(IRobotBehaviour behaviour, IMailPool mailPool, boolean strong, BuildingSector sector) {
+    public Robot(IRobotBehaviour behaviour, IMailPool mailPool, int carryWeight, BuildingSector sector) {
         this.id = "R" + hashCode();
         // currentState = RobotState.WAITING;
         this.currentState = RobotState.RETURNING;
@@ -42,9 +40,9 @@ public abstract class Robot {
         this.storage = null;
         this.behaviour = behaviour;
         this.mailPool = mailPool;
-        this.strong = strong;
         this.sector = sector;
         this.deliveryCounter = 0;
+        this.carryWeight = carryWeight;
     }
 
     /**
@@ -85,7 +83,7 @@ public abstract class Robot {
 
             case DELIVERING:
                 // Check whether or not the call to return is triggered manually.
-                boolean wantToReturn = this.behaviour.returnToMailRoom(this.storage);
+                boolean wantToReturn = this.behaviour.returnToMailRoom(this.storage, this.carryWeight);
                 if (this.currentFloor == this.destinationFloor) { // If already here drop off either way
                     // Delivery complete, report this to the simulator!
                     Simulation.reportDelivery(this.deliveryItem);
@@ -113,15 +111,12 @@ public abstract class Robot {
     /**
      * Sets the route for the robot
      */
-    private void setRoute() throws ItemTooHeavyException {
-        // Pop the item from the StorageUnit
-        this.deliveryItem = this.storage.pop();
-        if (!this.strong && this.deliveryItem.getWeight() > WeakRobot.CARRY_WEIGHT) {
-            throw new ItemTooHeavyException();
-        }
-        // Set the destination floor
-        this.destinationFloor = this.deliveryItem.getDestFloor();
-    }
+    protected abstract void setRoute() throws ItemTooHeavyException;
+
+    /**
+     * Returns whether the robot can carry something with a given weight
+     */
+
 
     /**
      * Generic function that moves the robot towards the destination
