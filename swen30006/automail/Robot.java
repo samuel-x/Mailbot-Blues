@@ -14,8 +14,8 @@ import java.util.TreeMap;
  */
 public abstract class Robot {
     // Provided code from LMS to ensure consistent hash codes.
-    static int count = 0;
-    static Map<Integer, Integer> hashMap = new TreeMap<Integer, Integer>();
+    private static int count = 0;
+    private static Map<Integer, Integer> hashMap = new TreeMap<>();
 
     public final String id;
     public RobotState currentState;
@@ -58,7 +58,7 @@ public abstract class Robot {
      * @throws InvalidStateTransitionException if the proposed state transition is invalid.
      */
     public void step() throws ExcessiveDeliveryException, ItemTooHeavyException, InvalidStateTransitionException {
-        switch(currentState) {
+        switch (currentState) {
             // This state is triggered when the robot is returning to the mailroom after a delivery.
             case RETURNING:
                 // If its current position is at the mailroom, then the robot should change state.
@@ -74,6 +74,7 @@ public abstract class Robot {
                     moveTowards(Building.MAILROOM_LOCATION);
                     break;
                 }
+
             case WAITING:
                 // Tell the sorter the robot is ready
                 mailPool.fillStorage(this.storage, this.sector);
@@ -95,7 +96,7 @@ public abstract class Robot {
                     Simulation.reportDelivery(this.deliveryItem);
                     this.deliveryCounter++;
                     if (this.deliveryCounter > storage.getMaxCapacity()) {
-                        throw new ExcessiveDeliveryException();
+                        throw new ExcessiveDeliveryException( storage.getMaxCapacity());
                     }
                     // Check if want to return or if there are more items in the tube
                     if (wantToReturn || this.storage.isEmpty()) {
@@ -112,6 +113,17 @@ public abstract class Robot {
                 }
                 break;
         }
+    }
+
+    // Provided code from LMS to ensure consistent hash codes.
+    @Override
+    public int hashCode() {
+        Integer hash0 = super.hashCode();
+        Integer hash = hashMap.get(hash0);
+        if (hash == null) {
+            hash = count++; hashMap.put(hash0, hash);
+        }
+        return hash;
     }
 
     /**
@@ -183,19 +195,5 @@ public abstract class Robot {
                 }
                 break;
         }
-    }
-
-    // Provided code from LMS to ensure consistent hash codes.
-    @Override
-    public int hashCode() {
-
-        Integer hash0 = super.hashCode();
-
-        Integer hash = hashMap.get(hash0);
-
-        if (hash == null) { hash = count++; hashMap.put(hash0, hash); }
-
-        return hash;
-
     }
 }

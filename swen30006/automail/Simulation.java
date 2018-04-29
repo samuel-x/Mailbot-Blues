@@ -22,36 +22,35 @@ public class Simulation {
 
     public static void main(String[] args) {
 
-        // Read the .Properties file if it exists.
-        Integer seed;
-        if (args.length != 0) {
-            seed = Integer.parseInt(args[0]);
-        }
-        else {
-            seed = null;
-        }
+        Integer seed = null;
 
+        // Read in the properties file.
         properties = new Properties("automail.Properties");
 
         if (properties.getSeed() != null) {
             seed = properties.getSeed();
         }
 
+        // If an input seed argument is provided, and was not specified in the properties file, save it.
+        if (seed == null && args.length != 0) {
+            seed = Integer.parseInt(args[0]);
+        }
+
+        // Save the the number of floors.
         Building.init(properties.getMaxFloor());
 
         Automail automail = null;
 
         try {
             automail = new Automail(properties.getRobotType1(), properties.getRobotType2());
-        }
-        catch (InvalidRobotConfigException e) {
+        } catch (InvalidRobotConfigException e) {
             e.printStackTrace();
             System.out.println("Simulation unable to complete.");
             System.exit(1);
         }
 
         MailGenerator generator = new MailGenerator(properties.getMailToCreate(),
-                properties.getLastDeliveryTime(), properties.getSeed());
+                properties.getLastDeliveryTime(), seed);
         
         // Initiate all the mail.
         generator.generateAllMail();
@@ -70,7 +69,7 @@ public class Simulation {
             } catch (ExcessiveDeliveryException | ItemTooHeavyException | InvalidStateTransitionException e) {
                 e.printStackTrace();
                 System.out.println("Simulation unable to complete.");
-                System.exit(1);
+                System.exit(0);
             }
             Clock.Tick();
         }

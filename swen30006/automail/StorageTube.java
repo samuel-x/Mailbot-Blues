@@ -10,36 +10,27 @@ import java.util.Stack;
 public class StorageTube implements Storage {
 
     private int maxCapacity;
-    public Stack<MailItem> tube = new Stack<>();;
+    public Stack<MailItem> tube = new Stack<>();
 
     /**
      * Constructor for the storage tube
+     * @param maxCapacity the max capacity of the tube.
      */
     public StorageTube(int maxCapacity){
-        this.tube = new Stack<MailItem>();
         this.maxCapacity = maxCapacity;
     }
 
-    /** @return if the storage tube is full */
-    public boolean isFull(){
-        return this.tube.size() == maxCapacity;
-    }
-
-    /** @return if the storage tube is empty */
+    @Override
     public boolean isEmpty(){
         return this.tube.isEmpty();
     }
-    
-    /** @return the first item in the storage tube (without removing it) */
+
+    @Override
     public MailItem peek() {
         return this.tube.peek();
     }
 
-    /**
-     * Add an item to the tube
-     * @param item The item being added
-     * @throws StorageFullException thrown if an item is added which exceeds the capacity
-     */
+    @Override
     public void add(MailItem item) throws StorageFullException {
         if(tube.size() < maxCapacity){
             tube.add(item);
@@ -48,17 +39,23 @@ public class StorageTube implements Storage {
         }
     }
 
-    /** @return the size of the tube **/
+    @Override
     public int getCurrentSize(){
         return this.tube.size();
     }
 
-    /** @return the first item in the storage tube (after removing it) */
+    @Override
     public MailItem pop(){
         return this.tube.pop();
     }
 
+    @Override
     public int getMaxCapacity() {
         return this.maxCapacity;
+    }
+
+    @Override
+    public boolean isFull() {
+        return this.tube.size() >= this.maxCapacity;
     }
 }
